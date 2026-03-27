@@ -10,6 +10,7 @@ import 'package:firstversion1/features/auth/views/success_set_view.dart';
 import 'package:firstversion1/features/auth/views/verification_view.dart';
 import 'package:firstversion1/features/auth/views/otp_verification_view.dart';
 import 'package:firstversion1/features/onboarding/views/onboarding_screen_view.dart';
+import 'package:firstversion1/features/uploadVideo/views/start_video_view.dart';
 import 'package:firstversion1/splash.dart';
 import 'package:firstversion1/test_me.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +28,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'SpectrumSense',
-      home: SplashView(),
+      // home: SplashView(),
       // home: TestMe(),
+      home: StartVideoView(),
       routes: {
         '/onboarding': (BuildContext context) => const OnboardingScreen(),
         '/login': (BuildContext context) => const LoginView(),
