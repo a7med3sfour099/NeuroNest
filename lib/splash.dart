@@ -16,7 +16,7 @@ class SplashView extends StatelessWidget {
           child: Container(
             width: 376,
             height: 504,
-            child: Image.asset('assets/splash/splash.png', fit: BoxFit.cover),
+            child: Image.asset('assets/splash/splash1.png', fit: BoxFit.cover),
           ),
         ),
       ),

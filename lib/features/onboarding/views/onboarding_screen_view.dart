@@ -170,7 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                side: BorderSide(color: Color(0xffFFFF00)),
+                side: BorderSide(color: Color(0xffD9D9D9)),
                 minimumSize: Size(115, 50),
               ),
               onPressed: () {

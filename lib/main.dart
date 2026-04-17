@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'SpectrumSense',
       // home: SplashView(),
       // home: TestMe(),
-      home: StartVideoView(),
+      home: SplashView(),
       routes: {
         '/onboarding': (BuildContext context) => const OnboardingScreen(),
         '/login': (BuildContext context) => const LoginView(),
