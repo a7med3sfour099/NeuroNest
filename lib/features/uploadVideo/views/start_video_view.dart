@@ -44,6 +44,7 @@ class _StartVideoViewState extends State<StartVideoView> {
             children: [
               Gap(20),
               CustomContainer(
+                width: 319,
                 title: 'How would you like to start?',
                 subtitle:
                     'Select the way you prefer to help us assess your child.',
@@ -52,8 +53,10 @@ class _StartVideoViewState extends State<StartVideoView> {
 
               /// First Card
               CustomCard(
+                onTap: () =>
+                    Navigator.pushReplacementNamed(context, '/uploadvideo'),
                 shapeColor: Color(0xff5DB7DE).withOpacity(0.75),
-                image: 'assets/ques/ques_view.png',
+                image: 'assets/video/upload 1.png',
                 text: 'Upload Child Video',
                 subText: 'Analyze a video of your child.',
                 bColor: Color(0xff5DB7DE),
@@ -63,6 +66,8 @@ class _StartVideoViewState extends State<StartVideoView> {
 
               /// Second Card
               CustomCard(
+                onTap: () =>
+                    Navigator.pushReplacementNamed(context, '/startques'),
                 shapeColor: Color(0xffEF7902),
                 image: 'assets/ques/ques_view.png',
                 text: 'Answer Questions',

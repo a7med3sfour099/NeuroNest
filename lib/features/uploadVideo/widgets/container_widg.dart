@@ -5,15 +5,15 @@ import 'package:firstversion1/shared/custom_text.dart';
 class CustomContainer extends StatelessWidget {
   final String title;
   final String subtitle;
+  final double? width;
 
-  const CustomContainer({Key? key, required this.title, required this.subtitle})
-    : super(key: key);
+  const CustomContainer({super.key, required this.title, required this.subtitle, this.width});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 123,
-      width: 319,
+      width: width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

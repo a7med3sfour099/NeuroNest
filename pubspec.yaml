@@ -40,6 +40,7 @@ dependencies:
   syncfusion_flutter_gauges: ^32.2.4
   dio: ^5.9.1
   shared_preferences: ^2.5.4
+  dotted_border: ^2.1.0
 
 dev_dependencies:
 
@@ -50,7 +51,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "neuronest_icon"
   ios: true
-  image_path: "assets/logo/neuronest_icon.png"
+  image_path: "assets/logo/app_logo.png"
   min_sdk_android: 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -79,6 +80,7 @@ flutter:
     - assets/auth/
     - assets/onboard/
     - assets/ques/
+    - assets/video/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

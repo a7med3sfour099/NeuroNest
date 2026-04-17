@@ -1,6 +1,7 @@
 import 'package:firstversion1/features/Home/views/child_info_view.dart';
 import 'package:firstversion1/features/assessmentQues/views/quesboard_view.dart';
 import 'package:firstversion1/features/assessmentQues/views/start_ques_view.dart';
+import 'package:firstversion1/features/assessmentResult/views/newResult.dart';
 import 'package:firstversion1/features/assessmentResult/views/result_view.dart';
 import 'package:firstversion1/features/auth/views/forget_pass_view.dart';
 import 'package:firstversion1/features/auth/views/login_view.dart';
@@ -11,6 +12,7 @@ import 'package:firstversion1/features/auth/views/verification_view.dart';
 import 'package:firstversion1/features/auth/views/otp_verification_view.dart';
 import 'package:firstversion1/features/onboarding/views/onboarding_screen_view.dart';
 import 'package:firstversion1/features/uploadVideo/views/start_video_view.dart';
+import 'package:firstversion1/features/uploadVideo/views/upload_video_view.dart';
 import 'package:firstversion1/splash.dart';
 import 'package:firstversion1/test_me.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/startques': (BuildContext context) => const StartQuesView(),
         '/quesboard': (BuildContext context) => const QuesboardView(),
         '/result': (BuildContext context) => const ResultView(),
+        '/uploadvideo': (BuildContext context) => const UploadVideoView(),
         '/test': (BuildContext context) => const TestMe(),
       },
     );
