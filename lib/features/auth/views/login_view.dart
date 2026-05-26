@@ -36,7 +36,7 @@ class _LoginViewState extends State<LoginView> {
                 horizontal: 10.0,
               ),
               child: Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                autovalidateMode: AutovalidateMode.onUserInteractionIfError,
                 key: _formKey,
                 child: Column(
                   children: [
@@ -108,7 +108,7 @@ class _LoginViewState extends State<LoginView> {
                                   );
                                 },
                                 text: 'Forget Password',
-                                color: Color(0xff000000),
+                                color: Colors.blue,
                                 size: 20,
                                 weight: FontWeight.w400,
                               ),
@@ -125,7 +125,7 @@ class _LoginViewState extends State<LoginView> {
                                 );
                               }
                             },
-                            text: 'Sign In',
+                            text: 'Login',
                           ),
                           Gap(18),
                           CustomOutlinedButton(

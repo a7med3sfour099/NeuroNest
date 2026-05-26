@@ -14,7 +14,6 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
 
-  // قائمة الشاشات الأربعة
   final List<Widget> _screens = [
     const HomeScreen(),
     const AssessmentHistoryScreen(),
@@ -25,7 +24,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],        // بيغير الشاشة حسب الـ index
+      body: _screens[_currentIndex], // بيغير الشاشة حسب الـ index
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
