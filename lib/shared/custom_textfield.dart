@@ -58,7 +58,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
                   _obscureText
                       ? CupertinoIcons.eye_slash_fill
                       : CupertinoIcons.eye_fill,
-                  color: Colors.black,
+                  color: Colors.black38,
                 ),
               )
             : null,
