@@ -1,5 +1,7 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firstversion1/core/constants/app_colors.dart';
 import 'package:firstversion1/core/utils/validators.dart';
+import 'package:firstversion1/features/auth/providers/auth_provider.dart';
 import 'package:firstversion1/shared/Custom_rowbutton.dart';
 import 'package:firstversion1/shared/custom_elevatedbutton.dart';
 import 'package:firstversion1/shared/custom_outlinedbutton.dart';
@@ -8,6 +10,7 @@ import 'package:firstversion1/shared/custom_textbutton.dart';
 import 'package:firstversion1/shared/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -21,6 +24,13 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
                             weight: FontWeight.w700,
                             textAlign: TextAlign.center,
                           ),
-                          Gap(3),
+                          Gap(4),
                           CustomText(
                             text: 'Welcome back please insert your details',
                             size: 20,
@@ -83,7 +93,7 @@ class _LoginViewState extends State<LoginView> {
                             textInputAction: TextInputAction.done,
                             validator: validateStrongPassword,
                           ),
-                          Gap(14),
+                          Gap(17),
                           Row(
                             children: [
                               Checkbox(
@@ -115,24 +125,53 @@ class _LoginViewState extends State<LoginView> {
                             ],
                           ),
                           Gap(25),
-                          CustomElevatedbutton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                Navigator.pushNamedAndRemoveUntil(
-                                  context,
-                                  '/childinfo',
-                                  (route) => false,
-                                );
+                          Consumer<AuthProvider>(
+                            builder: (context, authProvider, child) {
+                              if (authProvider.isLoading) {
+                                return const CircularProgressIndicator();
                               }
+
+                              return CustomElevatedbutton(
+                                onPressed: () async {
+                                  if (!_formKey.currentState!.validate())
+                                    return;
+
+                                  final success = await authProvider.login(
+                                    email: emailController.text.trim(),
+                                    password: passController.text,
+                                  );
+
+                                  if (!mounted) return;
+
+                                  if (success) {
+                                    Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      '/childinfo',
+                                      (route) => false,
+                                    );
+                                  } else {
+                                    AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.error,
+                                      animType: AnimType.bottomSlide,
+                                      title: 'Login Failed',
+                                      desc:
+                                          authProvider.errorMessage ??
+                                          'An error occurred during login.',
+                                      btnOkOnPress: () {},
+                                    ).show();
+                                  }
+                                },
+                                text: 'Login',
+                              );
                             },
-                            text: 'Login',
                           ),
-                          Gap(18),
+                          Gap(20),
                           CustomOutlinedButton(
                             backgroundImage: 'assets/auth/google_vector.png',
                             text: 'Sign Up with google',
                           ),
-                          Gap(5),
+                          Gap(18),
                           CustomRowButton(
                             onPressed: () {
                               Navigator.pushReplacementNamed(
