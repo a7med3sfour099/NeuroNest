@@ -1,5 +1,4 @@
-import 'package:firstversion1/shared/custom_text.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:graduationproject/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -19,7 +18,7 @@ class CustomOutlinedButton extends StatelessWidget {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        side: BorderSide(color: Color(0xffFFFF00)),
+        side: BorderSide(color: Color(0xffD9D9D9)),
         minimumSize: Size(double.infinity, 50),
       ),
       onPressed: onPressed,

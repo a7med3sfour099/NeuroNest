@@ -1,4 +1,4 @@
-import 'package:firstversion1/shared/custom_text.dart';
+import 'package:graduationproject/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

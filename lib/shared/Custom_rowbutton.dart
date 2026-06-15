@@ -1,5 +1,5 @@
-import 'package:firstversion1/shared/custom_text.dart';
-import 'package:firstversion1/shared/custom_textbutton.dart';
+import 'package:graduationproject/shared/custom_text.dart';
+import 'package:graduationproject/shared/custom_textbutton.dart';
 import 'package:flutter/material.dart';
 
 class CustomRowButton extends StatelessWidget {
