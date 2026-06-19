@@ -8,12 +8,14 @@ class CustomRadioList extends StatelessWidget {
     required this.val,
     this.groupValue,
     this.onChanged,
+    this.fontSize = 23,
   });
 
   final String text;
   final String val;
   final String? groupValue;
   final ValueChanged<String?>? onChanged;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +27,14 @@ class CustomRadioList extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         side: BorderSide(color: Color(0xff9D9D9D).withOpacity(0.4), width: 1),
       ),
-      activeColor: Color(0xff5DB7DE).withOpacity(0.6),
+      // activeColor: Color(0xff5DB7DE).withOpacity(0.6),
+      activeColor: Colors.white,
       selectedTileColor: const Color(0xff5DB7DE).withOpacity(0.6),
       selected: isSelected,
       title: CustomText(
         text: text,
-        size: 31,
-        color: Color(0xff000000),
+        size: fontSize ?? 23,
+        color: isSelected ? Colors.white : Color(0xff000000),
         weight: FontWeight.w500,
       ),
       value: val,
