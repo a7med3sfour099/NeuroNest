@@ -1,4 +1,4 @@
-import 'package:graduationproject/shared/custom_text.dart';
+import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class CustomElevatedbutton extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:firstversion1/shared/custom_text.dart';
+import 'package:neuronest/shared/custom_text.dart';
 
 class CustomContainer extends StatelessWidget {
   final String title;
@@ -11,7 +11,7 @@ class CustomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 123,
       width: width,
       child: Column(
