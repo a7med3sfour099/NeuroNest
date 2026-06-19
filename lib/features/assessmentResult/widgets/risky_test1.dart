@@ -47,7 +47,7 @@ class _GaugeDemoScreenState extends State<GaugeDemoScreen> {
             const SizedBox(height: 24),
 
             Text(
-              '${_value.toStringAsFixed(0)}',
+              _value.toStringAsFixed(0),
               style: const TextStyle(
                 color: Color.fromARGB(179, 0, 0, 0),
                 fontSize: 32,

@@ -129,7 +129,7 @@ class _GaugeDemoState extends State<GaugeDemo> {
 }
 
 class _ValueDisplay extends StatelessWidget {
-  const _ValueDisplay({super.key, required this.value});
+  const _ValueDisplay({required this.value});
   final double value;
 
   Color get _color {
@@ -144,7 +144,7 @@ class _ValueDisplay extends StatelessWidget {
       tween: Tween(end: value * 100),
       duration: const Duration(milliseconds: 600),
       curve: Curves.easeOutCubic,
-      builder: (_, v, __) => Text(
+      builder: (_, v, _) => Text(
         v.toStringAsFixed(0),
         style: TextStyle(
           color: _color,
@@ -257,7 +257,7 @@ class _GlassmorphicGaugeState extends State<GlassmorphicGauge>
           Positioned.fill(
             child: AnimatedBuilder(
               animation: _needleAnim,
-              builder: (_, __) => CustomPaint(
+              builder: (_, _) => CustomPaint(
                 painter: _GaugePainter(
                   fraction: _needleAnim.value.clamp(0.0, 1.0),
                   canvasSize: Size(w, h),
