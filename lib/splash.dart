@@ -13,7 +13,7 @@ class SplashView extends StatelessWidget {
         },
         behavior: HitTestBehavior.opaque, // to make the whole page clickable
         child: Center(
-          child: Container(
+          child: SizedBox(
             width: 376,
             height: 504,
             child: Image.asset('assets/splash/splash1.png', fit: BoxFit.cover),
