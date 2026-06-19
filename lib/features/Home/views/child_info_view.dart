@@ -1,8 +1,8 @@
-import 'package:firstversion1/core/constants/app_colors.dart';
-import 'package:firstversion1/features/Home/widgets/birth_date_widg.dart';
-import 'package:firstversion1/shared/custom_elevatedbutton.dart';
-import 'package:firstversion1/shared/custom_text.dart';
-import 'package:firstversion1/shared/custom_textfield.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/features/Home/widgets/birth_date_widg.dart';
+import 'package:neuronest/shared/custom_elevatedbutton.dart';
+import 'package:neuronest/shared/custom_text.dart';
+import 'package:neuronest/shared/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -56,8 +56,9 @@ class _ChildInfoViewState extends State<ChildInfoView> {
                         controller: nameController,
                         keyboard: TextInputType.text,
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty)
+                          if (v == null || v.trim().isEmpty) {
                             return 'Name is required';
+                          }
                           if (v.trim().length < 3) return 'Name too short';
                           return null;
                         },
