@@ -1,7 +1,7 @@
-import 'package:firstversion1/features/Home/views/history_screen_view.dart';
-import 'package:firstversion1/features/Home/views/home_screen_view.dart';
-import 'package:firstversion1/features/Home/views/profile_screen_view.dart';
-import 'package:firstversion1/features/Home/views/resource_screen_view.dart';
+import 'package:neuronest/features/Home/views/history_screen_view.dart';
+import 'package:neuronest/features/Home/views/home_screen_view.dart';
+import 'package:neuronest/features/Home/views/profile_screen_view.dart';
+import 'package:neuronest/features/Home/views/resource_screen_view.dart';
 import 'package:flutter/material.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -24,7 +24,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex], // بيغير الشاشة حسب الـ index
+      body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -33,7 +33,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           });
         },
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.orange,
+        selectedItemColor: const Color.fromARGB(255, 6, 103, 168),
         unselectedItemColor: Colors.grey.shade600,
         backgroundColor: Colors.white,
         elevation: 10,
