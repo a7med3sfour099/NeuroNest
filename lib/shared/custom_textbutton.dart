@@ -1,5 +1,4 @@
-import 'package:firstversion1/shared/custom_text.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextButton extends StatelessWidget {
