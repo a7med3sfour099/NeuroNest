@@ -1,9 +1,9 @@
-import 'package:firstversion1/core/constants/app_colors.dart';
-import 'package:firstversion1/shared/custom_elevatedbutton.dart';
-import 'package:firstversion1/shared/custom_radiolist.dart';
-import 'package:firstversion1/shared/custom_text.dart';
-import 'package:firstversion1/features/assessmentQues/widgets/ques_appbar_widg.dart';
-import 'package:firstversion1/shared/custom_textbutton.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/shared/custom_elevatedbutton.dart';
+import 'package:neuronest/shared/custom_radiolist.dart';
+import 'package:neuronest/shared/custom_text.dart';
+import 'package:neuronest/features/assessmentQues/widgets/ques_appbar_widg.dart';
+import 'package:neuronest/shared/custom_textbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -28,6 +28,11 @@ class _QuesboardViewState extends State<QuesboardView> {
     "If you or someone else in the family is visibly upset, does your child show signs of wanting to comfort them?",
     "How would you describe your child's first words?",
     "Does your child use simple gestures? (e.g. wave goodbye)",
+    "Does your child stare at nothing with no apparent purpose?",
+    "===========================================================",
+    "Does your child stare at nothing with no apparent purpose?",
+    "Does your child stare at nothing with no apparent purpose?",
+    "Does your child stare at nothing with no apparent purpose?",
     "Does your child stare at nothing with no apparent purpose?",
   ];
 
@@ -118,7 +123,11 @@ class _QuesboardViewState extends State<QuesboardView> {
                   ),
                   Gap(23),
                   Image.asset(
-                    'assets/ques/ques_image.png',
+                    (index < 5)
+                        ? 'assets/ques/ques_image.png'
+                        : (index < 10)
+                        ? 'assets/ques/ques_image_2.png'
+                        : 'assets/ques/ques_image_3.png',
                     width: 115,
                     height: 115,
                   ),
