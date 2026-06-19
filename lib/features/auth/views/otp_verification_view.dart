@@ -1,9 +1,9 @@
 // import 'dart:async';
-import 'package:firstversion1/core/constants/app_colors.dart';
-import 'package:firstversion1/shared/Custom_rowbutton.dart';
-import 'package:firstversion1/shared/custom_elevatedbutton.dart';
-import 'package:firstversion1/shared/custom_outlinedbutton.dart';
-import 'package:firstversion1/shared/custom_text.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/shared/Custom_rowbutton.dart';
+import 'package:neuronest/shared/custom_elevatedbutton.dart';
+import 'package:neuronest/shared/custom_outlinedbutton.dart';
+import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -19,14 +19,27 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
   // Timer? _timer;
   // bool _canResend = false;
 
+  bool _initialized = false;
+
   late List<TextEditingController> _controllers;
   late List<FocusNode> _focusNodes;
+  String email = '';
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  if (!_initialized) {
+    final args = ModalRoute.of(context)?.settings.arguments;
+
+    if (args is String) {
+      email = args;
+    }
+
     _controllers = List.generate(4, (_) => TextEditingController());
     _focusNodes = List.generate(4, (_) => FocusNode());
+
+    _initialized = true;
+  }
     // _startTimer();
 
     // Automatically move focus to the next field.
@@ -77,7 +90,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 57.0, horizontal: 5.0),
+              padding: const EdgeInsets.symmetric(
+                vertical: 57.0,
+                horizontal: 5.0,
+              ),
               child: Column(
                 children: [
                   Center(
@@ -113,7 +129,9 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(4, (index) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               child: SizedBox(
                                 width: 58,
                                 height: 74,
@@ -188,6 +206,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                                   Navigator.pushReplacementNamed(
                                     context,
                                     '/setnewpass',
+                                    arguments: {'email': email, 'code': otp},
                                   );
                                 }
                               : null,

@@ -1,15 +1,16 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:firstversion1/core/constants/app_colors.dart';
-import 'package:firstversion1/core/utils/validators.dart';
-import 'package:firstversion1/features/auth/providers/auth_provider.dart';
-import 'package:firstversion1/shared/Custom_rowbutton.dart';
-import 'package:firstversion1/shared/custom_elevatedbutton.dart';
-import 'package:firstversion1/shared/custom_outlinedbutton.dart';
-import 'package:firstversion1/shared/custom_text.dart';
-import 'package:firstversion1/shared/custom_textbutton.dart';
-import 'package:firstversion1/shared/custom_textfield.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/core/utils/validators.dart';
+import 'package:neuronest/features/auth/providers/auth_provider.dart';
+import 'package:neuronest/shared/Custom_rowbutton.dart';
+import 'package:neuronest/shared/custom_elevatedbutton.dart';
+import 'package:neuronest/shared/custom_outlinedbutton.dart';
+import 'package:neuronest/shared/custom_text.dart';
+import 'package:neuronest/shared/custom_textbutton.dart';
+import 'package:neuronest/shared/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:neuronest/shared/custom_outlinedbutton.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
@@ -168,6 +169,33 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           Gap(20),
                           CustomOutlinedButton(
+                            onPressed: () async {
+                              final authProvider = Provider.of<AuthProvider>(
+                                context,
+                                listen: false,
+                              );
+
+                              final success = await authProvider
+                                  .signInWithGoogle();
+
+                              if (!mounted) return;
+
+                              if (success) {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  '/childinfo',
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      authProvider.errorMessage ??
+                                          'Google login failed',
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
                             backgroundImage: 'assets/auth/google_vector.png',
                             text: 'Sign Up with google',
                           ),

@@ -1,11 +1,13 @@
-import 'package:firstversion1/core/constants/app_colors.dart';
-import 'package:firstversion1/core/utils/validators.dart';
-import 'package:firstversion1/shared/custom_elevatedbutton.dart';
-import 'package:firstversion1/shared/custom_outlinedbutton.dart';
-import 'package:firstversion1/shared/custom_text.dart';
-import 'package:firstversion1/shared/custom_textfield.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/core/utils/validators.dart';
+import 'package:neuronest/features/auth/providers/auth_provider.dart';
+import 'package:neuronest/shared/custom_elevatedbutton.dart';
+import 'package:neuronest/shared/custom_outlinedbutton.dart';
+import 'package:neuronest/shared/custom_text.dart';
+import 'package:neuronest/shared/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class SetNewPasswordView extends StatefulWidget {
   const SetNewPasswordView({super.key});
@@ -15,9 +17,32 @@ class SetNewPasswordView extends StatefulWidget {
 }
 
 class _SetNewPasswordViewState extends State<SetNewPasswordView> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController passController = TextEditingController();
   TextEditingController confirmPassController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+
+  Map<String, dynamic>? data;
+  String? email;
+  String? code;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  final args = ModalRoute.of(context)?.settings.arguments;
+
+  if (args is Map<String, dynamic>) {
+    data = args;
+    email = args['email']?.toString();
+    code = args['code']?.toString();
+  }
+  }
+
+  @override
+  void dispose() {
+    passController.dispose();
+    confirmPassController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,14 +111,27 @@ class _SetNewPasswordViewState extends State<SetNewPasswordView> {
                           ),
                           Gap(17),
                           CustomElevatedbutton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.pushReplacementNamed(
+                                final authProvider = Provider.of<AuthProvider>(
                                   context,
-                                  '/successset',
+                                  listen: false,
                                 );
+
+                                final success = await authProvider
+                                    .resetPassword(
+                                      email: email!,
+                                      code: code!,
+                                      newPassword: passController.text,
+                                    );
+
+                                if (success) {
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    '/successset',
+                                  );
+                                }
                               }
-                              ;
                             },
                             text: 'Save Password',
                           ),

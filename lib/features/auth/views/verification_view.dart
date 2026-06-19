@@ -1,8 +1,8 @@
-import 'package:firstversion1/core/constants/app_colors.dart';
-import 'package:firstversion1/shared/Custom_rowbutton.dart';
-import 'package:firstversion1/shared/custom_elevatedbutton.dart';
-import 'package:firstversion1/shared/custom_outlinedbutton.dart';
-import 'package:firstversion1/shared/custom_text.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/shared/Custom_rowbutton.dart';
+import 'package:neuronest/shared/custom_elevatedbutton.dart';
+import 'package:neuronest/shared/custom_outlinedbutton.dart';
+import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -14,6 +14,19 @@ class VerificationView extends StatefulWidget {
 }
 
 class _VerificationViewState extends State<VerificationView> {
+  String email = '';
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final args = ModalRoute.of(context)?.settings.arguments;
+
+    if (args is String) {
+      email = args;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -46,7 +59,7 @@ class _VerificationViewState extends State<VerificationView> {
                       weight: FontWeight.w700,
                       textAlign: TextAlign.center,
                     ),
-                    Gap(3),
+                    Gap(4),
                     CustomText(
                       text:
                           'We sent a password reset line to example@gmail.com',
@@ -55,21 +68,22 @@ class _VerificationViewState extends State<VerificationView> {
                       weight: FontWeight.w400,
                       textAlign: TextAlign.center,
                     ),
-                    Gap(18),
+                    Gap(60),
                     CustomElevatedbutton(
                       onPressed: () => Navigator.pushReplacementNamed(
                         context,
                         '/otpverification',
+                        arguments: email,
                       ),
                       text: 'Continue',
                     ),
-                    Gap(28),
-                    CustomRowButton(
-                      text: 'Don\'t receive an email ??',
-                      sizedText: 21,
-                      textButton: 'Click to',
-                    ),
-                    Gap(28),
+                    // Gap(28),
+                    // CustomRowButton(
+                    //   text: 'Don\'t receive an email ??',
+                    //   sizedText: 21,
+                    //   textButton: 'Click to',
+                    // ),
+                    Gap(25),
                     CustomOutlinedButton(
                       onPressed: () =>
                           Navigator.pushReplacementNamed(context, '/login'),
