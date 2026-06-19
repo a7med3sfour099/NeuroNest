@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class LearningResourcesScreen extends StatelessWidget {
   const LearningResourcesScreen({super.key});
@@ -12,10 +13,6 @@ class LearningResourcesScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 56,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
-          onPressed: () {},
-        ),
         title: const Text(
           "Resources",
           style: TextStyle(
@@ -25,12 +22,6 @@ class LearningResourcesScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black87),
-            onPressed: () {},
-          ),
-        ],
       ),
 
       body: Stack(
@@ -45,10 +36,7 @@ class LearningResourcesScreen extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFD0E5FF),
-                    Color(0xFFF4F7FE),
-                  ],
+                  colors: [Color(0xFFD0E5FF), Color(0xFFF4F7FE)],
                 ),
               ),
             ),
@@ -58,81 +46,112 @@ class LearningResourcesScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ListView(
                 children: [
-                  const SizedBox(height: 56),
+                  Gap(30),
 
-            // Neumorphic Search Field
-            _buildNeumorphicSearchField(),
+                  // Neumorphic Search Field
+                  _buildNeumorphicSearchField(),
 
-            const SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
-            // Articles Section
-            _buildSectionTitle("Articles"),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildNeumorphicCard(
-                  icon: Icons.menu_book,
-                  iconColor: Colors.indigo,
-                  title: "Creating a Sensory Oasis at Home",
-                ),
-                _buildNeumorphicCard(
-                  icon: Icons.menu_book,
-                  iconColor: Colors.indigo,
-                  title: "The Power of Visual Schedules",
-                ),
-              ],
+                  // Articles Section
+                  _buildSectionTitle("Articles"),
+                  const SizedBox(height: 16),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildNeumorphicCard(
+                          icon: Icons.menu_book,
+                          iconColor: Colors.indigo,
+                          title: "Creating a Sensory Oasis at Home",
+                        ),
+                        Gap(15),
+                        _buildNeumorphicCard(
+                          icon: Icons.menu_book,
+                          iconColor: Colors.indigo,
+                          title: "The Power of Visual Schedules",
+                        ),
+                        Gap(15),
+                        _buildNeumorphicCard(
+                          icon: Icons.menu_book,
+                          iconColor: Colors.indigo,
+                          title: "The Power of Visual Schedules.............",
+                        ),
+                        Gap(15),
+                        _buildNeumorphicCard(
+                          icon: Icons.menu_book,
+                          iconColor: Colors.indigo,
+                          title: "The Power of Visual Schedules==========",
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Videos Section
+                  _buildSectionTitle("Videos"),
+                  const SizedBox(height: 16),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildNeumorphicCard(
+                          icon: Icons.play_circle_fill,
+                          iconColor: Colors.teal,
+                          title: "Morning Calmness Routine",
+                          isVideo: true,
+                        ),
+                        Gap(15),
+                        _buildNeumorphicCard(
+                          icon: Icons.settings,
+                          iconColor: Colors.grey.shade700,
+                          title: "Understanding Stimming Behavior",
+                        ),
+                        Gap(15),
+                        _buildNeumorphicCard(
+                          icon: Icons.settings,
+                          iconColor: Colors.grey.shade700,
+                          title: "Understanding Stimming Behavior..........",
+                        ),
+                        Gap(15),
+                        _buildNeumorphicCard(
+                          icon: Icons.settings,
+                          iconColor: Colors.grey.shade700,
+                          title: "Understanding Stimming Behavior==========",
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // const SizedBox(height: 32),
+
+                  // // Exercises Section
+                  // _buildSectionTitle("Exercises"),
+                  // const SizedBox(height: 16),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     _buildNeumorphicCard(
+                  //       icon: Icons.access_time,
+                  //       iconColor: Colors.orange,
+                  //       title: "The 'My Day' Journal Guide",
+                  //     ),
+                  //     _buildNeumorphicCard(
+                  //       icon: Icons.calendar_today,
+                  //       iconColor: Colors.purple,
+                  //       title: "Mindful Sensory Bin Ideas",
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 50),
+                ],
+              ),
             ),
-
-            const SizedBox(height: 32),
-
-            // Videos Section
-            _buildSectionTitle("Videos"),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildNeumorphicCard(
-                  icon: Icons.play_circle_fill,
-                  iconColor: Colors.teal,
-                  title: "Morning Calmness Routine",
-                  isVideo: true,
-                ),
-                _buildNeumorphicCard(
-                  icon: Icons.settings,
-                  iconColor: Colors.grey.shade700,
-                  title: "Understanding Stimming Behavior",
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 32),
-
-            // Exercises Section
-            _buildSectionTitle("Exercises"),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildNeumorphicCard(
-                  icon: Icons.access_time,
-                  iconColor: Colors.orange,
-                  title: "The 'My Day' Journal Guide",
-                ),
-                _buildNeumorphicCard(
-                  icon: Icons.calendar_today,
-                  iconColor: Colors.purple,
-                  title: "Mindful Sensory Bin Ideas",
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 50),
-          ],
-        ),
-      ),
-      ),
-      ],
+          ),
+        ],
       ),
     );
   }
@@ -148,12 +167,12 @@ class LearningResourcesScreen extends StatelessWidget {
         boxShadow: [
           const BoxShadow(
             color: Colors.white,
-            offset: Offset(-4, -4),
+            offset: Offset(-1, -1),
             blurRadius: 10,
           ),
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
-            offset: const Offset(4, 4),
+            offset: const Offset(1, 1),
             blurRadius: 10,
           ),
         ],
