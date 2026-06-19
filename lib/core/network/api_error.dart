@@ -2,7 +2,7 @@ class ApiError {
   final int? statusCode;
   final String message;
 
-  ApiError({required this.message, this.statusCode});
+  const ApiError({required this.message, this.statusCode});
 
   @override
   String toString() {

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:firstversion1/core/utils/pref_helpers.dart';
+import 'package:neuronest/core/utils/pref_helpers.dart';
 
 class DioClient {
   final Dio _dio = Dio(

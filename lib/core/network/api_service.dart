@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:firstversion1/core/network/api_exceptions.dart';
-import 'package:firstversion1/core/network/dio_client.dart';
+import 'package:neuronest/core/network/api_exceptions.dart';
+import 'package:neuronest/core/network/dio_client.dart';
 
 class ApiService {
   final DioClient _dioClient = DioClient();
@@ -12,7 +12,7 @@ class ApiService {
     try {
       final response = await _dioClient.dio.get(endPoint);
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiExceptions.handleException(e);
     }
   }
@@ -23,7 +23,7 @@ class ApiService {
     try {
       final response = await _dioClient.dio.post(endPoint, data: body);
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiExceptions.handleException(e);
     }
   }
@@ -34,7 +34,7 @@ class ApiService {
     try {
       final response = await _dioClient.dio.put(endPoint, data: body);
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiExceptions.handleException(e);
     }
   }
@@ -47,7 +47,7 @@ class ApiService {
     try {
       final response = await _dioClient.dio.delete(endPoint, data: body);
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiExceptions.handleException(e);
     }
   }
