@@ -25,10 +25,6 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
           "Assessment History",
           style: TextStyle(
@@ -59,19 +55,17 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
           SafeArea(
             child: Column(
               children: [
-                const SizedBox(height: 56),
                 // Summary Card
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: SummaryCard(),
                 ),
 
-                // Search Bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SearchBarWidget(controller: _searchController),
-                ),
-
+                // // Search Bar
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                //   child: SearchBarWidget(controller: _searchController),
+                // ),
                 const SizedBox(height: 16),
 
                 // Past Assessments Header
@@ -101,7 +95,7 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
                         color: Color(0xFFFF9800), // Orange
                         icon: Icons.assignment,
                         type: "Questionnaire",
-                        date: "1 مايو 2024",
+                        date: "13 May",
                         result: "High Probability",
                         resultColor: Colors.red,
                       ),
@@ -110,7 +104,7 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
                         color: Color(0xFF9C27B0), // Purple
                         icon: Icons.description,
                         type: "Document Review",
-                        date: "15 أبريل 2024",
+                        date: "3 May",
                         result: "Moderate",
                         resultColor: Colors.orange,
                       ),
@@ -119,7 +113,34 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
                         color: Color(0xFF2196F3), // Blue
                         icon: Icons.videocam,
                         type: "Video Session",
-                        date: "12 مايو 2024",
+                        date: "22 April",
+                        result: "Low Probability",
+                        resultColor: Colors.green,
+                      ),
+                      SizedBox(height: 12),
+                      AssessmentListItem(
+                        color: Color(0xFF2196F3), // Blue
+                        icon: Icons.videocam,
+                        type: "Video Session",
+                        date: "22 April",
+                        result: "Low Probability",
+                        resultColor: Colors.green,
+                      ),
+                      SizedBox(height: 12),
+                      AssessmentListItem(
+                        color: Color(0xFF9C27B0), // Purple
+                        icon: Icons.description,
+                        type: "Document Review",
+                        date: "3 May",
+                        result: "Moderate",
+                        resultColor: Colors.orange,
+                      ),
+                      SizedBox(height: 12),
+                      AssessmentListItem(
+                        color: Color(0xFF2196F3), // Blue
+                        icon: Icons.videocam,
+                        type: "Video Session",
+                        date: "22 April",
                         result: "Low Probability",
                         resultColor: Colors.green,
                       ),
@@ -127,42 +148,42 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
                   ),
                 ),
 
-                // Bottom Button
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    width: double.infinity,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1565C0), Color(0xFF00BCD4)],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // TODO: Navigate to detailed history
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: const Text(
-                        "View Detailed History",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // ====================> Bottom Button <====================
+                // Padding(
+                //   padding: const EdgeInsets.all(16.0),
+                //   child: Container(
+                //     width: double.infinity,
+                //     height: 56,
+                //     decoration: BoxDecoration(
+                //       gradient: const LinearGradient(
+                //         colors: [Color(0xFF1565C0), Color(0xFF00BCD4)],
+                //         begin: Alignment.centerLeft,
+                //         end: Alignment.centerRight,
+                //       ),
+                //       borderRadius: BorderRadius.circular(30),
+                //     ),
+                //     child: ElevatedButton(
+                //       onPressed: () {
+                //         // TODO: Navigate to detailed history
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //         backgroundColor: Colors.transparent,
+                //         shadowColor: Colors.transparent,
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(30),
+                //         ),
+                //       ),
+                //       child: const Text(
+                //         "View Detailed History",
+                //         style: TextStyle(
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.bold,
+                //           color: Colors.white,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
