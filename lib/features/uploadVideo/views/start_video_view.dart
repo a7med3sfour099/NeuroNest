@@ -1,7 +1,7 @@
-import 'package:firstversion1/core/constants/app_colors.dart';
-import 'package:firstversion1/features/uploadVideo/widgets/container_widg.dart';
-import 'package:firstversion1/features/uploadVideo/widgets/custom_card_widg.dart';
-import 'package:firstversion1/shared/custom_text.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/features/uploadVideo/widgets/container_widg.dart';
+import 'package:neuronest/features/uploadVideo/widgets/custom_card_widg.dart';
+import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -76,7 +76,7 @@ class _StartVideoViewState extends State<StartVideoView> {
                 bText: 'Start Questions',
               ),
               Gap(20),
-              Container(
+              SizedBox(
                 width: 314,
                 height: 52,
                 child: CustomText(

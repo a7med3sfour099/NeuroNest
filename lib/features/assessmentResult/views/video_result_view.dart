@@ -1,8 +1,8 @@
-import 'package:graduationproject/core/constants/app_colors.dart';
-import 'package:graduationproject/features/assessmentResult/widgets/custom_card_widg.dart';
-import 'package:graduationproject/features/assessmentResult/widgets/riskgauge_widg.dart';
-import 'package:graduationproject/shared/custom_elevatedbutton.dart';
-import 'package:graduationproject/shared/custom_text.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/features/assessmentResult/widgets/custom_card_widg.dart';
+import 'package:neuronest/features/assessmentResult/widgets/riskgauge_widg.dart';
+import 'package:neuronest/shared/custom_elevatedbutton.dart';
+import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
