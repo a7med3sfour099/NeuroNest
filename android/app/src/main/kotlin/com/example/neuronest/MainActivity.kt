@@ -1,4 +1,4 @@
-package com.example.firstversion1
+package com.example.neuronest
 
 import io.flutter.embedding.android.FlutterActivity
 
