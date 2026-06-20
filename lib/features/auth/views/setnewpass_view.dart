@@ -26,15 +26,32 @@ class _SetNewPasswordViewState extends State<SetNewPasswordView> {
   String? code;
 
   @override
+  void initState() {
+    super.initState();
+    passController.addListener(_checkMatch);
+    confirmPassController.addListener(_checkMatch);
+  }
+
+  void _checkMatch() {
+    if (mounted) setState(() {});
+  }
+
+  bool get _passwordsMatch {
+    final pass = passController.text;
+    final confirm = confirmPassController.text;
+    return pass.isNotEmpty && confirm.isNotEmpty && pass == confirm;
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-  final args = ModalRoute.of(context)?.settings.arguments;
+    final args = ModalRoute.of(context)?.settings.arguments;
 
-  if (args is Map<String, dynamic>) {
-    data = args;
-    email = args['email']?.toString();
-    code = args['code']?.toString();
-  }
+    if (args is Map<String, dynamic>) {
+      data = args;
+      email = args['email']?.toString();
+      code = args['code']?.toString();
+    }
   }
 
   @override
@@ -109,6 +126,32 @@ class _SetNewPasswordViewState extends State<SetNewPasswordView> {
                               return validateStrongPassword(v);
                             },
                           ),
+                          if (_passwordsMatch)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 10.0,
+                                right: 4.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                    size: 18,
+                                  ),
+                                  Gap(6),
+                                  Text(
+                                    'Matched',
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           Gap(17),
                           CustomElevatedbutton(
                             onPressed: () async {
