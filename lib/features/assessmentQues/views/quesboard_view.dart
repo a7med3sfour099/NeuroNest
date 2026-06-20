@@ -18,6 +18,13 @@ class _QuesboardViewState extends State<QuesboardView> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  final List<Map<String, String>> options = [
+    {'title': 'Always', 'value': '1.0'},
+    {'title': 'Never', 'value': '0.0'},
+    {'title': 'Often', 'value': '0.66'},
+    {'title': 'Rarely', 'value': '0.33'},
+  ];
+
   final List<String> questions = [
     "Does your child look at you when you call his/her name?",
     "How easy is it for you to get eye contact with your child?",
@@ -139,45 +146,48 @@ class _QuesboardViewState extends State<QuesboardView> {
                     weight: FontWeight.w600,
                     textAlign: TextAlign.center,
                   ),
-                  Gap(23),
-                  RadioGroup<String>(
-                    groupValue: _selectedAnswers[index],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedAnswers[index] = value!;
-                      });
+                  Gap(38),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: options.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 2.8,
+                        ),
+                    itemBuilder: (context, i) {
+                      return Center(
+                        child: CustomRadioList(
+                          text: options[i]['title']!,
+                          val: options[i]['value']!,
+                          groupValue: _selectedAnswers[index],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedAnswers[index] = value;
+                            });
+                          },
+                        ),
+                      );
                     },
-                    child: Column(
-                      children: [
-                        CustomRadioList(
-                          text: 'Yes',
-                          val: '1',
-                          groupValue: _selectedAnswers[index],
-                          onChanged: (value) =>
-                              setState(() => _selectedAnswers[index] = value),
-                        ),
-                        Gap(17),
-                        CustomRadioList(
-                          text: 'No',
-                          val: '0',
-                          groupValue: _selectedAnswers[index],
-                          onChanged: (value) =>
-                              setState(() => _selectedAnswers[index] = value),
-                        ),
-                      ],
-                    ),
                   ),
-                  Gap(26),
+                  Gap(20),
                   CustomElevatedbutton(
                     onPressed: () {
                       if (_selectedAnswers[_currentPage] == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Please select Yes or No before continuing',
+                          SnackBar(
+                            content: const Text(
+                              'Please select an answer before continuing',
                             ),
                             backgroundColor: Colors.red,
-                            duration: Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            duration: const Duration(milliseconds: 1500),
                           ),
                         );
                         return;
@@ -203,12 +213,16 @@ class _QuesboardViewState extends State<QuesboardView> {
                   Gap(10),
                   CustomTextButton(
                     onPressed: () {
+                      setState(() {
+                        _selectedAnswers[_currentPage] = null;
+                      });
                       if (_currentPage < questions.length - 1) {
                         _pageController.nextPage(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
                       } else {
+                        print("Selected answers: $_selectedAnswers");
                         Navigator.pushNamed(
                           context,
                           '/result',
@@ -217,7 +231,7 @@ class _QuesboardViewState extends State<QuesboardView> {
                         );
                       }
                     },
-                    text: 'Skip',
+                    text: 'I don\'t Know',
                     color: Color(0xff6C6969),
                     size: 23,
                     weight: FontWeight.w500,
