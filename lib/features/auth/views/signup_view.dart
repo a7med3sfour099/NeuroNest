@@ -150,35 +150,6 @@ class _SignUpViewState extends State<SignUpView> {
                             textButton: 'Log in',
                           ),
                           Gap(10),
-                          // CustomElevatedbutton(
-                          //   onPressed: () async {
-                          //     if (_formKey.currentState!.validate()) {
-                          //       ScaffoldMessenger.of(context).showSnackBar(
-                          //         SnackBar(
-                          //           content: const Text(
-                          //             'Sign up successfully! Redirecting to login...',
-                          //           ),
-                          //           duration: const Duration(seconds: 2),
-                          //           backgroundColor: Colors.green[700],
-                          //           behavior: SnackBarBehavior.floating,
-                          //           shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(10),
-                          //           ),
-                          //         ),
-                          //       );
-                          //       await Future.delayed(
-                          //         const Duration(seconds: 2),
-                          //       );
-                          //       if (mounted) {
-                          //         Navigator.pushReplacementNamed(
-                          //           context,
-                          //           '/login',
-                          //         );
-                          //       }
-                          //     }
-                          //   },
-                          //   text: 'Sign In',
-                          // ),
                           Consumer<AuthProvider>(
                             builder: (context, authProvider, child) {
                               return CustomElevatedbutton(
@@ -204,7 +175,7 @@ class _SignUpViewState extends State<SignUpView> {
                                           ).showSnackBar(
                                             SnackBar(
                                               content: const Text(
-                                                'Account created successfully',
+                                                'Account created successfully, please check your email for verification.',
                                               ),
                                               duration: const Duration(
                                                 seconds: 1,
@@ -224,7 +195,7 @@ class _SignUpViewState extends State<SignUpView> {
                                           );
                                           Navigator.pushNamedAndRemoveUntil(
                                             context,
-                                            '/login',
+                                            '/otpverification',
                                             (route) => false,
                                           );
                                         } else {
