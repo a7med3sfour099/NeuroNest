@@ -1,5 +1,4 @@
 import 'package:neuronest/core/constants/app_colors.dart';
-import 'package:neuronest/shared/Custom_rowbutton.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_outlinedbutton.dart';
 import 'package:neuronest/shared/custom_text.dart';
@@ -72,7 +71,7 @@ class _VerificationViewState extends State<VerificationView> {
                     CustomElevatedbutton(
                       onPressed: () => Navigator.pushReplacementNamed(
                         context,
-                        '/otpverification',
+                        '/otpverificationpass',
                         arguments: email,
                       ),
                       text: 'Continue',
