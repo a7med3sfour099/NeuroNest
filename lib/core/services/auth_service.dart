@@ -59,7 +59,7 @@ class AuthService {
   }) async {
     try {
       final body = {
-        'FullName': name.trim(),
+        'fullName': name.trim(),
         'email': email.trim(),
         'password': password,
       };
@@ -93,6 +93,25 @@ class AuthService {
       return null;
     }
   }
+
+  Future<bool> verifyEmail({
+  required String email,
+  required String code,
+}) async {
+  try {
+    final response = await _api.post(
+      '/auth/verify-email',
+      {
+        'email': email,
+        'code': code,
+      },
+    );
+
+    return response is! ApiError;
+  } catch (e) {
+    return false;
+  }
+}
 
   Future<bool> forgotPassword(String email) async {
     try {

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/features/auth/providers/auth_provider.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class OtpVerificationPasswordView extends StatefulWidget {
   const OtpVerificationPasswordView({super.key});
@@ -14,7 +16,8 @@ class OtpVerificationPasswordView extends StatefulWidget {
       _OtpVerificationPasswordViewState();
 }
 
-class _OtpVerificationPasswordViewState extends State<OtpVerificationPasswordView> {
+class _OtpVerificationPasswordViewState
+    extends State<OtpVerificationPasswordView> {
   int _secondsRemaining = 60;
   Timer? _timer;
   bool _canResend = false;
@@ -83,23 +86,51 @@ class _OtpVerificationPasswordViewState extends State<OtpVerificationPasswordVie
     });
   }
 
-  void _resendCode() {
-    _startTimer();
-    for (var controller in _controllers) {
-      controller.clear();
-    }
-    _focusNodes[0].requestFocus();
+  Future<void> _resendCode() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Code has been resent.'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+    final success = await authProvider.forgotPassword(email);
+
+    if (!mounted) return;
+
+    if (success) {
+      _startTimer();
+
+      for (var controller in _controllers) {
+        controller.clear();
+      }
+
+      _focusNodes[0].requestFocus();
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Code sent successfully')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.errorMessage ?? 'Failed to resend code'),
+        ),
+      );
+    }
   }
+
+  // void _resendCode() {
+  //   _startTimer();
+  //   for (var controller in _controllers) {
+  //     controller.clear();
+  //   }
+  //   _focusNodes[0].requestFocus();
+
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: const Text('Code has been resent.'),
+  //       duration: const Duration(seconds: 2),
+  //       backgroundColor: Colors.green,
+  //       behavior: SnackBarBehavior.floating,
+  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  //     ),
+  //   );
+  // }
 
   @override
   void dispose() {
@@ -152,7 +183,7 @@ class _OtpVerificationPasswordViewState extends State<OtpVerificationPasswordVie
                         Gap(3),
                         CustomText(
                           text:
-                              'We sent a password reset line to example@gmail.com',
+                              'We sent a password reset code to $email',
                           size: 20,
                           color: Color(0xff6c6969),
                           weight: FontWeight.w400,
@@ -170,8 +201,12 @@ class _OtpVerificationPasswordViewState extends State<OtpVerificationPasswordVie
                                 width: 58,
                                 height: 74,
                                 child: TextField(
+                                  cursorColor: Color(0xff5DB7DE),
                                   controller: _controllers[index],
                                   focusNode: _focusNodes[index],
+                                  onChanged: (_) {
+                                    setState(() {});
+                                  },
                                   keyboardType: TextInputType.number,
                                   textAlign: TextAlign.center,
                                   maxLength: 1,

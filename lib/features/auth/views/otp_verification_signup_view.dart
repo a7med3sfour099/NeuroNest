@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/features/auth/providers/auth_provider.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class OtpVerificationSignupView extends StatefulWidget {
   const OtpVerificationSignupView({super.key});
@@ -143,7 +145,7 @@ class _OtpVerificationSignupViewState extends State<OtpVerificationSignupView> {
                     child: Column(
                       children: [
                         CustomText(
-                          text: 'Check your email',
+                          text: 'Verify your email',
                           size: 23,
                           color: Color(0xff000000),
                           weight: FontWeight.w700,
@@ -151,8 +153,7 @@ class _OtpVerificationSignupViewState extends State<OtpVerificationSignupView> {
                         ),
                         Gap(3),
                         CustomText(
-                          text:
-                              'We sent a password reset line to example@gmail.com',
+                          text: 'We sent a verification code to $email',
                           size: 20,
                           color: Color(0xff6c6969),
                           weight: FontWeight.w400,
@@ -242,12 +243,64 @@ class _OtpVerificationSignupViewState extends State<OtpVerificationSignupView> {
                         Gap(27),
                         CustomElevatedbutton(
                           onPressed: otp.length == 6
-                              ? () {
-                                  Navigator.pushReplacementNamed(
-                                    context,
-                                    '/login',
-                                    arguments: {'email': email, 'code': otp},
-                                  );
+                              ? () async {
+                                  final authProvider =
+                                      Provider.of<AuthProvider>(
+                                        context,
+                                        listen: false,
+                                      );
+
+                                  final success = await authProvider
+                                      .verifyEmail(email: email, code: otp);
+
+                                  if (!mounted) return;
+
+                                  if (success) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text(
+                                          'Email verified successfully',
+                                        ),
+                                        duration: const Duration(
+                                          milliseconds: 1500,
+                                        ),
+                                        backgroundColor: Colors.green[700],
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                    await Future.delayed(
+                                      const Duration(milliseconds: 2000),
+                                    );
+
+                                    Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      '/login',
+                                      (route) => false,
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text(
+                                          'Invalid verification code',
+                                        ),
+                                        duration: const Duration(
+                                          milliseconds: 1500,
+                                        ),
+                                        backgroundColor: Colors.redAccent,
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 }
                               : null,
                           text: otp.length == 6 ? 'Verify' : 'Enter OTP',

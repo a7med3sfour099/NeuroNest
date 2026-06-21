@@ -23,6 +23,7 @@ class _SignUpViewState extends State<SignUpView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  String otp = '';
 
   @override
   void dispose() {
@@ -102,6 +103,12 @@ class _SignUpViewState extends State<SignUpView> {
                                       authProvider.errorMessage ??
                                           'Google login failed',
                                     ),
+                                    duration: const Duration(seconds: 1),
+                                    backgroundColor: Colors.redAccent,
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
                                 );
                               }
@@ -158,13 +165,17 @@ class _SignUpViewState extends State<SignUpView> {
                                     : () async {
                                         if (!_formKey.currentState!.validate())
                                           return;
-
+                                        debugPrint(
+                                          'EMAIL => $emailController.text',
+                                        );
+                                        debugPrint('OTP => $otp');
                                         final success = await authProvider
                                             .signup(
                                               name: nameController.text.trim(),
                                               email: emailController.text
                                                   .trim(),
                                               password: passController.text,
+                                              otp: otp,
                                             );
 
                                         if (!mounted) return;
@@ -178,7 +189,7 @@ class _SignUpViewState extends State<SignUpView> {
                                                 'Account created successfully, please check your email for verification.',
                                               ),
                                               duration: const Duration(
-                                                seconds: 1,
+                                                seconds: 2,
                                               ),
                                               backgroundColor:
                                                   Colors.green[700],
@@ -191,12 +202,14 @@ class _SignUpViewState extends State<SignUpView> {
                                             ),
                                           );
                                           await Future.delayed(
-                                            const Duration(milliseconds: 1500),
+                                            const Duration(milliseconds: 2500),
                                           );
                                           Navigator.pushNamedAndRemoveUntil(
                                             context,
-                                            '/otpverification',
+                                            '/otpverificationsignup',
                                             (route) => false,
+                                            arguments: emailController.text
+                                                .trim(),
                                           );
                                         } else {
                                           AwesomeDialog(

@@ -173,6 +173,15 @@ class _SetNewPasswordViewState extends State<SetNewPasswordView> {
                                     context,
                                     '/successset',
                                   );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        authProvider.errorMessage ??
+                                            'Failed to reset password. Please try again.',
+                                      ),
+                                    ),
+                                  );
                                 }
                               }
                             },

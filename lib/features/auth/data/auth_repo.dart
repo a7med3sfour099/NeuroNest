@@ -26,6 +26,16 @@ class AuthRepository {
     );
   }
 
+  Future<bool> verifyEmail({
+  required String email,
+  required String code,
+}) {
+  return _authService.verifyEmail(
+    email: email,
+    code: code,
+  );
+}
+
   Future<void> logout() async {
     await _authService.logout();
   }
@@ -37,16 +47,6 @@ class AuthRepository {
   Future<bool> forgotPassword(String email) async {
     return await _authService.forgotPassword(email);
   }
-
-  // Future<bool> verifyOtp(
-  //   String email,
-  //   String otp,
-  // ) async {
-  //   return await _authService.verifyOtp(
-  //     email,
-  //     otp,
-  //   );
-  // }
 
   Future<bool> resetPassword({
     required String email,

@@ -57,7 +57,7 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> signup({
     required String name,
     required String email,
-    required String password,
+    required String password, required otp,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -85,6 +85,24 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> verifyEmail({
+  required String email,
+  required String code,
+}) async {
+  _isLoading = true;
+  notifyListeners();
+
+  try {
+    return await _repository.verifyEmail(
+      email: email,
+      code: code,
+    );
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
+}
 
 
     // Forgot password method
