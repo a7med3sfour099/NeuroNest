@@ -26,22 +26,53 @@ class _QuesboardViewState extends State<QuesboardView> {
   ];
 
   final List<String> questions = [
-    "Does your child look at you when you call his/her name?",
-    "How easy is it for you to get eye contact with your child?",
-    "Does your child point to indicate that his/her wants something?",
-    "Does your child point to share interest with you?",
-    "Does your child pretend? (e.g. care for dolls, talk on a toy phone)",
-    "Does your child follow where you're looking?",
-    "If you or someone else in the family is visibly upset, does your child show signs of wanting to comfort them?",
-    "How would you describe your child's first words?",
-    "Does your child use simple gestures? (e.g. wave goodbye)",
-    "Does your child stare at nothing with no apparent purpose?",
-    "===========================================================",
-    "Does your child stare at nothing with no apparent purpose?",
-    "Does your child stare at nothing with no apparent purpose?",
-    "Does your child stare at nothing with no apparent purpose?",
-    "Does your child stare at nothing with no apparent purpose?",
+    //1
+    "If you point at something across the room, does your child look at it?",
+    //2
+    "Have you ever wondered if your child might be deaf?",
+    //3
+    "Does your child play pretend or make-believe?",
+    //4
+    "Does your child like climbing on things?",
+    //5
+    "Does your child make unusual finger movements near his or her eyes?",
+    //6
+    "Does your child point with one finger to ask for something or to get help?",
+    //7
+    "Does your child point with one finger to show you something interesting?",
+    //8
+    "Is your child interested in other children?",
+    //9
+    "Does your child show you things by bringing them to you or holding them up for you to see?",
+    //10
+    "Does your child respond when you call his or her name?",
+    //11
+    "When you smile at your child, does he or she smile back at you?",
+    //12
+    "Does your child get upset by everyday noises?",
+    //13
+    "Does your child walk?",
+    //14
+    "Does your child look you in the eye when you are talking to him or her, playing with him or her, or dressing him or her?",
+    //15
+    "Does your child try to copy what you do?",
+    //16
+    "If you turn your head to look at something, does your child look around to see what you are looking at?",
+    //17
+    "Does your child try to get you to watch him or her?",
+    //18
+    "Does your child understand when you tell him or her to do something?",
+    //19
+    "If something new happens, does your child look at your face to see how you feel about it?",
+    //20
+    "Does your child like movement activities?",
   ];
+
+  // organization of Questions
+
+  // social_interaction Questions: 3,8,10,11,14,15,18
+  // communication Questions: 1,6,7,9,16,17,
+  // repetitive_behaviors Questions: 2,4,5,12,13,20
 
   List<String?> _selectedAnswers = [];
 
