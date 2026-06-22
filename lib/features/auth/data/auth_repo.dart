@@ -14,7 +14,7 @@ class AuthRepository {
     return await _authService.login(email, password);
   }
 
-  Future<UserModel?> signup({
+  Future<bool> signup({
     required String name,
     required String email,
     required String password,

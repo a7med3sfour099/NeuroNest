@@ -23,7 +23,6 @@ class _SignUpViewState extends State<SignUpView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
-  String otp = '';
 
   @override
   void dispose() {
@@ -168,14 +167,12 @@ class _SignUpViewState extends State<SignUpView> {
                                         debugPrint(
                                           'EMAIL => $emailController.text',
                                         );
-                                        debugPrint('OTP => $otp');
                                         final success = await authProvider
                                             .signup(
                                               name: nameController.text.trim(),
                                               email: emailController.text
                                                   .trim(),
                                               password: passController.text,
-                                              otp: otp,
                                             );
 
                                         if (!mounted) return;
@@ -204,10 +201,9 @@ class _SignUpViewState extends State<SignUpView> {
                                           await Future.delayed(
                                             const Duration(milliseconds: 2500),
                                           );
-                                          Navigator.pushNamedAndRemoveUntil(
+                                          Navigator.pushNamed(
                                             context,
                                             '/otpverificationsignup',
-                                            (route) => false,
                                             arguments: emailController.text
                                                 .trim(),
                                           );

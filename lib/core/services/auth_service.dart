@@ -52,7 +52,7 @@ class AuthService {
   }
 
   /// Sign up new user
-  Future<UserModel?> signup({
+  Future<bool> signup({
     required String name,
     required String email,
     required String password,
@@ -73,24 +73,26 @@ class AuthService {
 
       debugPrint('SIGNUP RESPONSE: $response');
 
-      if (response is Map<String, dynamic>) {
-        final token = response['token'];
+      return response is Map<String, dynamic>;
 
-        if (token != null) {
-          await PrefHelper.saveToken(token.toString());
-        }
+      // if (response is Map<String, dynamic>) {
+      //   final token = response['token'];
 
-        return UserModel(
-          name: response['fullName'] ?? name,
-          email: response['email'] ?? email,
-          token: token?.toString(),
-        );
-      }
+      //   if (token != null) {
+      //     await PrefHelper.saveToken(token.toString());
+      //   }
 
-      return null;
+      //   return UserModel(
+      //     name: response['fullName'] ?? name,
+      //     email: response['email'] ?? email,
+      //     token: token?.toString(),
+      //   );
+      // }
+
+      // return null;
     } catch (e) {
       debugPrint('Signup error: $e');
-      return null;
+      return false;
     }
   }
 

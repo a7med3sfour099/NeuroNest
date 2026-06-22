@@ -16,7 +16,7 @@ class AuthProvider extends ChangeNotifier {
 
   bool get isLoggedIn => _currentUser != null;
 
-    // Login method
+  // Login method
   Future<bool> login({required String email, required String password}) async {
     _isLoading = true;
     _errorMessage = null;
@@ -53,11 +53,11 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-    // Signup method
+  // Signup method
   Future<bool> signup({
     required String name,
     required String email,
-    required String password, required otp,
+    required String password,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -69,14 +69,13 @@ class AuthProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
+      // if (user != null && user.name != null) {
+      //   _currentUser = user;
+      //   return true;
+      // }
 
-      if (user != null) {
-        _currentUser = user;
-        return true;
-      }
-
-      _errorMessage = 'Signup failed';
-      return false;
+      _errorMessage = 'Signup failed, Invalid email or password.';
+      return user;
     } catch (e) {
       _errorMessage = e.toString();
       return false;
@@ -87,105 +86,99 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> verifyEmail({
-  required String email,
-  required String code,
-}) async {
-  _isLoading = true;
-  notifyListeners();
-
-  try {
-    return await _repository.verifyEmail(
-      email: email,
-      code: code,
-    );
-  } finally {
-    _isLoading = false;
+    required String email,
+    required String code,
+  }) async {
+    _isLoading = true;
     notifyListeners();
-  }
-}
 
-
-    // Forgot password method
-Future<bool> forgotPassword(String email) async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-
-  try {
-    return await _repository.forgotPassword(email);
-  } catch (e) {
-    _errorMessage = e.toString();
-    return false;
-  } finally {
-    _isLoading = false;
-    notifyListeners();
-  }
-}
-
-Future<bool> resetPassword({
-  required String email,
-  required String code,
-  required String newPassword,
-}) async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-
-  try {
-    return await _repository.resetPassword(
-      email: email,
-      code: code,
-      newPassword: newPassword,
-    );
-  } catch (e) {
-    _errorMessage = e.toString();
-    return false;
-  } finally {
-    _isLoading = false;
-    notifyListeners();
-  }
-}
-
-Future<bool> resendVerification(String email) async {
-  _isLoading = true;
-  notifyListeners();
-
-  try {
-    return await _repository.resendVerification(email);
-  } finally {
-    _isLoading = false;
-    notifyListeners();
-  }
-}
-
-Future<bool> signInWithGoogle() async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-
-  try {
-    final user =
-        await _repository.signInWithGoogle();
-
-    if (user != null) {
-      _currentUser = user;
-      return true;
+    try {
+      return await _repository.verifyEmail(email: email, code: code);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    _errorMessage =
-        'Google Sign In Failed';
-
-    return false;
-  } catch (e) {
-    _errorMessage = e.toString();
-    return false;
-  } finally {
-    _isLoading = false;
-    notifyListeners();
   }
-}
 
-    // Logout method
+  // Forgot password method
+  Future<bool> forgotPassword(String email) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      return await _repository.forgotPassword(email);
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      return await _repository.resetPassword(
+        email: email,
+        code: code,
+        newPassword: newPassword,
+      );
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> resendVerification(String email) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      return await _repository.resendVerification(email);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> signInWithGoogle() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final user = await _repository.signInWithGoogle();
+
+      if (user != null) {
+        _currentUser = user;
+        return true;
+      }
+
+      _errorMessage = 'Google Sign In Failed';
+
+      return false;
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Logout method
   Future<void> logout() async {
     await _repository.logout();
 
