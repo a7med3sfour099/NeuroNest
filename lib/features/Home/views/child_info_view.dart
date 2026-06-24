@@ -1,10 +1,14 @@
 import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/core/network/api_service.dart';
+import 'package:neuronest/features/Home/providers/child_provider.dart';
 import 'package:neuronest/features/Home/widgets/birth_date_widg.dart';
+import 'package:neuronest/features/assessmentQues/providers/screening_provider.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_text.dart';
 import 'package:neuronest/shared/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class ChildInfoView extends StatefulWidget {
   const ChildInfoView({super.key});
@@ -16,9 +20,16 @@ class ChildInfoView extends StatefulWidget {
 class _ChildInfoViewState extends State<ChildInfoView> {
   TextEditingController nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? _dateOfBirth;
   String? _gender;
   String? _Jaundice;
   String? _FamilyHistory;
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +80,10 @@ class _ChildInfoViewState extends State<ChildInfoView> {
                         Gap(15),
                         DateOfBirthField(
                           onDateSelected: (selectedDate) {
-                            print("Selected date: $selectedDate");
+                            setState(
+                              () => _dateOfBirth =
+                                  "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
+                            );
                           },
                         ),
                         Gap(25),
@@ -91,7 +105,7 @@ class _ChildInfoViewState extends State<ChildInfoView> {
                                   child: _selectionCard(
                                     title: "Male",
                                     icon: Icons.male_rounded,
-                                    value: "0",
+                                    value: "Male",
                                     groupValue: _gender,
                                     onTap: (value) =>
                                         setState(() => _gender = value),
@@ -102,7 +116,7 @@ class _ChildInfoViewState extends State<ChildInfoView> {
                                   child: _selectionCard(
                                     title: "Female",
                                     icon: Icons.female_rounded,
-                                    value: "1",
+                                    value: "Female",
                                     groupValue: _gender,
                                     onTap: (value) =>
                                         setState(() => _gender = value),
@@ -205,12 +219,37 @@ class _ChildInfoViewState extends State<ChildInfoView> {
                         ),
                         Gap(25),
                         CustomElevatedbutton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              Navigator.pushReplacementNamed(
-                                context,
-                                '/startques',
-                              );
+                          onPressed: () async {
+                            if (!_formKey.currentState!.validate()) return;
+                            if (_dateOfBirth == null || _gender == null) return;
+                            final provider = context.read<ChildProvider>();
+
+                            final childId = await provider.addChild(
+                              childName: nameController.text,
+                              dateOfBirth: _dateOfBirth!,
+                              gender: _gender!,
+                              hasJaundice: _Jaundice == "1",
+                              familyASD: _FamilyHistory == "1",
+                            );
+
+                            if (childId != null) {
+                              final screeningId = await context
+                                  .read<ScreeningProvider>()
+                                  .createScreening(childId);
+
+                              print('CHILD ID => $childId');
+                              print('SCREENING ID => $screeningId');
+
+                              if (screeningId != null) {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  '/startques',
+                                  arguments: {
+                                    'childId': childId,
+                                    'screeningId': screeningId,
+                                  },
+                                );
+                              }
                             }
                           },
                           text: 'Continue',
