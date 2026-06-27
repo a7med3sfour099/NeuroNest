@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "414461300173",
+    "project_id": "autism-project-99a5a",
+    "storage_bucket": "autism-project-99a5a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414461300173:android:7f33c84b223ee4076a0884",
+        "android_client_info": {
+          "package_name": "com.example.neuronest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "414461300173-sf6kcc3mnpl7cet540mlh3p5g2v82565.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr77bNo-MPM__q_FQlTh8xCL6RsUhQJ4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "414461300173-sf6kcc3mnpl7cet540mlh3p5g2v82565.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

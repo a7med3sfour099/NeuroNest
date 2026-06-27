@@ -1,0 +1,4 @@
+- [ ] Inspect `auth_service.dart` compile errors from file contents
+- [ ] Add missing FirebaseAuth import(s) used by `signInWithGoogle()`
+- [ ] Run `flutter analyze` (or `flutter test`) to confirm fix
+- [ ] If there are still errors, iterate by fixing nullability/type mismatches in Google auth token creation
