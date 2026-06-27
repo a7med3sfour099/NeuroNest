@@ -74,7 +74,6 @@ dependencies:
   flutter_spinkit: 5.2.0
 
   # Toast Messages
-  fluttertoast: 8.2.4
 
 dev_dependencies:
   flutter_test:
