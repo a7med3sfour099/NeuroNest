@@ -56,7 +56,10 @@ class _StartQuesViewState extends State<StartQuesView> {
                     Gap(32),
                     CustomElevatedbutton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/quesboard');
+                        Navigator.pushNamed(
+                          context,
+                          '/quesboard',
+                        );
                       },
                       text: 'Start Assessment',
                     ),
