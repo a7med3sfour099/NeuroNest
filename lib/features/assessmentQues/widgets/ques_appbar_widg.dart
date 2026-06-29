@@ -47,11 +47,11 @@ class QuesAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       elevation: 0,
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.background,
       scrolledUnderElevation: 0,
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(65); // Adjust the height as needed for the appbar
+  Size get preferredSize => const Size.fromHeight(80); // Adjust the height as needed for the appbar
 }

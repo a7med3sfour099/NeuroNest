@@ -12,27 +12,27 @@ class ResultView extends StatefulWidget {
     this.onBackPressed,
     this.selectedAnswers,
     this.totalQuestions = 0,
+    this.apiResult,
   });
 
   final VoidCallback? onBackPressed;
   final List<String?>? selectedAnswers;
   final int totalQuestions;
+  final Map<String, dynamic>? apiResult;
 
   @override
   State<ResultView> createState() => _ResultViewState();
 }
 
 class _ResultViewState extends State<ResultView> {
-  late int _totalQuestions;
   late List<dynamic> _selectedAnswers;
-  double _riskScore = 0.0;
+  Map<String, dynamic>? _apiResult;
   bool _isDataInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _selectedAnswers = widget.selectedAnswers ?? [];
-    _totalQuestions = widget.totalQuestions;
   }
 
   @override
@@ -45,96 +45,91 @@ class _ResultViewState extends State<ResultView> {
 
   void _initializeDataFromNavigation() {
     final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is List) {
+
+    if (args is Map<String, dynamic>) {
+      _apiResult = args['apiResult'];
+
+      if (args['selectedAnswers'] != null) {
+        _selectedAnswers = List<dynamic>.from(args['selectedAnswers']);
+      }
+    } else if (args is List) {
       _selectedAnswers = args;
-      _totalQuestions = args.length;
+      _calculateRiskScore();
     }
 
     _isDataInitialized = true;
-    _calculateRiskScore();
   }
 
-  // Count the number of answers with a value of 1 (YES)
+  double? _parseAnswerValue(String? value) {
+    if (value == null || value.isEmpty) return null;
+    return double.tryParse(value);
+  }
+
   void _calculateRiskScore() {
-    int yesCount = _getTotalYesCount();
-    if (_totalQuestions > 0) {
-      _riskScore = (yesCount / _totalQuestions) * 100;
-    } else {
-      _riskScore = 0.0;
-    }
-  }
-
-  int _getTotalYesCount() {
     int count = 0;
+
     for (var answer in _selectedAnswers) {
-      if (_isYesAnswer(answer)) {
+      final value = _parseAnswerValue(answer);
+      if (value != null) {
         count++;
       }
     }
+
+    if (count > 0) {
+    } else {}
+  }
+
+  int _getAnsweredCountByQuestions(List<int> questionIndices) {
+    int count = 0;
+
+    for (final question in questionIndices) {
+      final index = question - 1;
+
+      if (index < _selectedAnswers.length && _selectedAnswers[index] != null) {
+        count++;
+      }
+    }
+
     return count;
   }
 
-  // Function to check if the answer is YES
-  bool _isYesAnswer(dynamic answer) {
-    if (answer == null) return false;
-    if (answer is int) return answer == 1;
-    if (answer is String) {
-      return answer.toLowerCase() == 'yes' || answer == '1';
-    }
-    if (answer is bool) return answer == true;
-    return false;
+  bool _hasAnyAnswerByQuestions(List<int> questionIndices) {
+    return _getAnsweredCountByQuestions(questionIndices) > 0;
   }
 
-  // Count the number of YES answers in a specific range (number adjusted)
-  int _getYesCount(int startIndex, int endIndex) {
-    int yesCount = 0;
-    for (
-      int i = startIndex;
-      i <= endIndex && i < _selectedAnswers.length;
-      i++
-    ) {
-      if (_isYesAnswer(_selectedAnswers[i])) {
-        yesCount++;
+  double _getCategoryAverageByQuestions(List<int> questionIndices) {
+    double sum = 0;
+    int count = 0;
+
+    for (final question in questionIndices) {
+      final index = question - 1;
+
+      if (index < _selectedAnswers.length) {
+        final value = _parseAnswerValue(_selectedAnswers[index]?.toString());
+
+        if (value != null) {
+          sum += value;
+          count++;
+        }
       }
     }
-    return yesCount;
+
+    return count == 0 ? 0.0 : sum / count;
   }
 
-  // Evaluate the category (Low / Moderate / High)
-  String _getCategoryRating(int startIndex, int endIndex) {
-    int yesCount = _getYesCount(startIndex, endIndex);
-    int total = (endIndex - startIndex + 1);
+  String _getCategoryRatingByQuestions(List<int> questionIndices) {
+    final average = _getCategoryAverageByQuestions(questionIndices);
+    final answeredCount = _getAnsweredCountByQuestions(questionIndices);
 
-    if (startIndex + total > _selectedAnswers.length) {
-      total = _selectedAnswers.length - startIndex;
-    }
-    if (total < 0) total = 0;
+    if (answeredCount == 0) return 'No Data';
 
-    if (total == 0) return 'No Data';
-
-    double percentage = (yesCount / total) * 100;
-
-    if (percentage <= 33) {
+    if (average <= 0.33) {
       return 'Low';
-    } else if (percentage <= 66) {
+    } else if (average <= 0.66) {
       return 'Moderate';
     } else {
       return 'High';
     }
-  }
-
-  // Check if there are any answers in the category
-  bool _hasAnyAnswer(int startIndex, int endIndex) {
-    for (
-      int i = startIndex;
-      i <= endIndex && i < _selectedAnswers.length;
-      i++
-    ) {
-      if (_selectedAnswers[i] != null) {
-        return true;
-      }
-    }
-    return false;
   }
 
   Color _getRatingColor(String rating) {
@@ -163,16 +158,35 @@ class _ResultViewState extends State<ResultView> {
     }
   }
 
+  String getRiskMessage(String riskLevel) {
+    switch (riskLevel.toLowerCase()) {
+      case 'high':
+        return 'Strong indicators were detected. Professional evaluation is recommended.';
+      case 'moderate':
+        return 'Some indicators were detected. Further assessment is recommended.';
+      case 'low':
+        return 'Few indicators were detected. Continue monitoring development.';
+      default:
+        return 'Assessment completed.';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final result = _apiResult ?? widget.apiResult;
+
+    if (result == null) return const Center(child: CircularProgressIndicator());
+
+    final riskLevel = result['riskLevel'] ?? 'Unknown';
+    final score = result['totalScore'] ?? 0;
+    // final message = result['message'] ?? '';
+
+    final riskMessage = getRiskMessage(riskLevel);
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        leading: IconButton(
-          iconSize: 33,
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: widget.onBackPressed ?? () => Navigator.pop(context),
-        ),
+        backgroundColor: AppColors.background,
+        automaticallyImplyLeading: false,
         title: CustomText(
           text: 'Assessment Result',
           size: 21,
@@ -182,13 +196,13 @@ class _ResultViewState extends State<ResultView> {
         ),
         centerTitle: true,
       ),
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             children: [
-              _buildRiskGaugeCard(),
+              _buildRiskGaugeCard(riskLevel, score, riskMessage),
               const Gap(13),
               _buildCategoriesCards(),
               const Gap(13),
@@ -196,11 +210,11 @@ class _ResultViewState extends State<ResultView> {
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    '/startques',
+                    '/root',
                     (route) => false,
                   );
                 },
-                text: 'Retake Assessment',
+                text: 'Go to Home',
               ),
             ],
           ),
@@ -209,10 +223,11 @@ class _ResultViewState extends State<ResultView> {
     );
   }
 
-  Widget _buildRiskGaugeCard() {
-    // Calculating the actual percentage for the Overall Assessment
-    String riskText = _getRiskDescription();
-
+  Widget _buildRiskGaugeCard(
+    String riskLevel,
+    dynamic score,
+    String riskMessage,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 27.0, horizontal: 10.0),
       child: Container(
@@ -235,14 +250,34 @@ class _ResultViewState extends State<ResultView> {
               ),
             ),
             const Gap(5),
-            RiskGauge(value: _riskScore),
+            RiskGauge(value: score.toDouble()),
             const Gap(17),
-            CustomText(
-              text: riskText,
-              size: 16,
-              color: const Color(0xff6C6969),
-              weight: FontWeight.w400,
-              textAlign: TextAlign.center,
+            Column(
+              children: [
+                CustomText(
+                  text: 'Risk Level: $riskLevel',
+                  size: 20,
+                  color: Colors.black,
+                  weight: FontWeight.w700,
+                  textAlign: TextAlign.center,
+                ),
+                const Gap(10),
+                CustomText(
+                  text: 'Score: $score',
+                  size: 18,
+                  color: Colors.black,
+                  weight: FontWeight.w600,
+                  textAlign: TextAlign.center,
+                ),
+                const Gap(10),
+                CustomText(
+                  text: riskMessage,
+                  size: 16,
+                  color: const Color(0xff6C6969),
+                  weight: FontWeight.w400,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ],
         ),
@@ -250,34 +285,29 @@ class _ResultViewState extends State<ResultView> {
     );
   }
 
-  String _getRiskDescription() {
-    if (_riskScore >= 70) {
-      return 'High likelihood: Behaviors strongly associated with autism spectrum traits.';
-    } else if (_riskScore >= 40) {
-      return 'Moderate likelihood: Some behaviors may be associated with autism spectrum traits.';
-    } else {
-      return 'Low likelihood: Few behaviors associated with autism spectrum traits.';
-    }
-  }
-
   Widget _buildCategoriesCards() {
+    print('RESULT ANSWERS => $_selectedAnswers');
+    print('RESULT LENGTH => ${_selectedAnswers.length}');
     final categories = [
       {
         'title': 'Social Interaction',
-        'start': 0,
-        'end': 4,
+        // 'start': 0,
+        // 'end': 4,
+        'questions': [3, 8, 10, 11, 14, 15, 18],
         'image': 'assets/ques/ques_image.png',
       },
       {
         'title': 'Communication',
-        'start': 5,
-        'end': 9,
+        // 'start': 5,
+        // 'end': 9,
+        'questions': [1, 6, 7, 9, 16, 17, 19],
         'image': 'assets/ques/ques_image_2.png',
       },
       {
         'title': 'Repetitive Behaviors',
-        'start': 10,
-        'end': 14,
+        // 'start': 10,
+        // 'end': 14,
+        'questions': [2, 4, 5, 12, 13, 20],
         'image': 'assets/ques/ques_image_3.png',
       },
     ];
@@ -285,11 +315,13 @@ class _ResultViewState extends State<ResultView> {
     List<Widget> visibleCards = [];
 
     for (var category in categories) {
-      final start = category['start'] as int;
-      final end = category['end'] as int;
+      // final start = category['start'] as int;
+      // final end = category['end'] as int;
+      final questions = category['questions'] as List<int>;
 
-      if (_hasAnyAnswer(start, end)) {
-        final rating = _getCategoryRating(start, end);
+      if (_hasAnyAnswerByQuestions(questions)) {
+        final rating = _getCategoryRatingByQuestions(questions);
+        // final average = _getCategoryAverageByQuestions(questions);
 
         visibleCards.add(
           Column(

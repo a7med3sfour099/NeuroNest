@@ -28,49 +28,6 @@ class _QuesboardViewState extends State<QuesboardView> {
     {'title': 'Rarely', 'value': '0.33'},
   ];
 
-  // final List<String> questions = [
-  //   //1
-  //   "If you point at something across the room, does your child look at it?",
-  //   //2
-  //   "Have you ever wondered if your child might be deaf?",
-  //   //3
-  //   "Does your child play pretend or make-believe?",
-  //   //4
-  //   "Does your child like climbing on things?",
-  //   //5
-  //   "Does your child make unusual finger movements near his or her eyes?",
-  //   //6
-  //   "Does your child point with one finger to ask for something or to get help?",
-  //   //7
-  //   "Does your child point with one finger to show you something interesting?",
-  //   //8
-  //   "Is your child interested in other children?",
-  //   //9
-  //   "Does your child show you things by bringing them to you or holding them up for you to see?",
-  //   //10
-  //   "Does your child respond when you call his or her name?",
-  //   //11
-  //   "When you smile at your child, does he or she smile back at you?",
-  //   //12
-  //   "Does your child get upset by everyday noises?",
-  //   //13
-  //   "Does your child walk?",
-  //   //14
-  //   "Does your child look you in the eye when you are talking to him or her, playing with him or her, or dressing him or her?",
-  //   //15
-  //   "Does your child try to copy what you do?",
-  //   //16
-  //   "If you turn your head to look at something, does your child look around to see what you are looking at?",
-  //   //17
-  //   "Does your child try to get you to watch him or her?",
-  //   //18
-  //   "Does your child understand when you tell him or her to do something?",
-  //   //19
-  //   "If something new happens, does your child look at your face to see how you feel about it?",
-  //   //20
-  //   "Does your child like movement activities?",
-  // ];
-
   // organization of Questions
 
   // social_interaction Questions: 3,8,10,11,14,15,18
@@ -92,6 +49,7 @@ class _QuesboardViewState extends State<QuesboardView> {
         _selectedAnswers = List<String?>.filled(
           provider.questions.length,
           null,
+          growable: true,
         );
       });
     });
@@ -127,7 +85,7 @@ class _QuesboardViewState extends State<QuesboardView> {
           }
         },
       ),
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.background,
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
@@ -153,6 +111,7 @@ class _QuesboardViewState extends State<QuesboardView> {
       child: Column(
         //=======
         children: [
+          // Gap(20),
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 27.0,
@@ -172,6 +131,7 @@ class _QuesboardViewState extends State<QuesboardView> {
                     height: 49,
                     decoration: BoxDecoration(
                       color: Color(0xff5DB7DE),
+                      // color: Color(0xff4a7dcd),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: EdgeInsets.all(10),
@@ -185,9 +145,9 @@ class _QuesboardViewState extends State<QuesboardView> {
                   ),
                   Gap(23),
                   Image.asset(
-                    (index < 5)
+                    (index < 7)
                         ? 'assets/ques/ques_image.png'
-                        : (index < 10)
+                        : (index < 7)
                         ? 'assets/ques/ques_image_2.png'
                         : 'assets/ques/ques_image_3.png',
                     width: 115,
@@ -220,11 +180,15 @@ class _QuesboardViewState extends State<QuesboardView> {
                           fontSize: 19,
                           text: options[i]['title']!,
                           val: options[i]['value']!,
-                          groupValue: _selectedAnswers[index],
+                          groupValue: _selectedAnswers.length > index
+                              ? _selectedAnswers[index]
+                              : null,
                           onChanged: (value) {
-                            setState(() {
-                              _selectedAnswers[index] = value;
-                            });
+                            if (_selectedAnswers.length > index) {
+                              setState(() {
+                                _selectedAnswers[index] = value;
+                              });
+                            }
                           },
                         ),
                       );
@@ -277,8 +241,14 @@ class _QuesboardViewState extends State<QuesboardView> {
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Failed to submit answers'),
+                            SnackBar(
+                              content: const Text('Failed to submit answers'),
+                              backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              duration: const Duration(milliseconds: 1500),
                             ),
                           );
                         }

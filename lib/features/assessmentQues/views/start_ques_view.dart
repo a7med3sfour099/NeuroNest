@@ -17,56 +17,55 @@ class _StartQuesViewState extends State<StartQuesView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 198.0,
-            horizontal: 15.0,
-          ),
-          child: Column(
-            children: [
-              Center(
-                child: Image.asset(
-                  'assets/ques/ques_view.png',
-                  width: 216,
-                  height: 216,
+        backgroundColor: AppColors.background,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 198.0,
+              horizontal: 15.0,
+            ),
+            child: Column(
+              children: [
+                Center(
+                  child: Image.asset(
+                    'assets/ques/ques_view.png',
+                    width: 216,
+                    height: 216,
+                  ),
                 ),
-              ),
-              Gap(32),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  children: [
-                    CustomText(
-                      text: 'Let\'s get started',
-                      size: 23,
-                      color: Color(0xff000000),
-                      weight: FontWeight.w700,
-                      textAlign: TextAlign.center,
-                    ),
-                    Gap(3),
-                    CustomText(
-                      text:
-                          'Answer a few questions to help us understand your child better',
-                      size: 20,
-                      color: Color(0xff6c6969),
-                      weight: FontWeight.w400,
-                      textAlign: TextAlign.center,
-                    ),
-                    Gap(32),
-                    CustomElevatedbutton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/quesboard',
-                        );
-                      },
-                      text: 'Start Assessment',
-                    ),
-                  ],
+                Gap(32),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      CustomText(
+                        text: 'Let\'s get started',
+                        size: 23,
+                        color: AppColors.textPrimary,
+                        weight: FontWeight.w700,
+                        textAlign: TextAlign.center,
+                      ),
+                      Gap(3),
+                      CustomText(
+                        text:
+                            'Answer a few questions to help us understand your child better',
+                        size: 20,
+                        color: AppColors.textTertiary,
+                        weight: FontWeight.w400,
+                        textAlign: TextAlign.center,
+                      ),
+                      Gap(32),
+                      CustomElevatedbutton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/quesboard');
+                        },
+                        text: 'Start Assessment',
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:neuronest/features/Home/data/child_model.dart';
 import 'package:neuronest/features/Home/data/child_repo.dart';
 
 class ChildProvider extends ChangeNotifier {
-  final ChildRepository _repo =
-      ChildRepository();
+  final ChildRepository _repo = ChildRepository();
 
   bool isLoading = false;
 
@@ -27,6 +27,9 @@ class ChildProvider extends ChangeNotifier {
       });
 
       if (response != null) {
+        currentChild = ChildModel.fromJson(response);
+
+        notifyListeners();
         return response['childID'];
       }
 
@@ -36,4 +39,16 @@ class ChildProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  ChildModel? currentChild;
+
+Future<void> loadChild() async {
+  currentChild = await _repo.getCurrentChild();
+
+  debugPrint(
+    "Current Child => ${currentChild?.childName} (${currentChild?.childID})",
+  );
+
+  notifyListeners();
+}
 }
