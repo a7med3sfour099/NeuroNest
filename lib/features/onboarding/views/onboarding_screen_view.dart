@@ -19,19 +19,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'image': 'assets/onboard/first_onboarding_image.png',
       'title': 'Welcome to NeuroNest',
       'subtitle':
-          'Helping parents recognize early behavioral signals with care and intelligence.',
+          'Your smart, supportive companion in understanding your child\'s developmental journey with care.',
     },
     {
       'image': 'assets/onboard/second_onboarding_image.png',
       'title': 'Early Awareness Starts Here',
       'subtitle':
-          'Upload a short video and let SpectrumSense provide early insights into your child\'s behavior.',
+          'Upload a short video of your child\'s natural playtime, and our AI will analyze early behavioral patterns.',
     },
     {
       'image': 'assets/onboard/third_onboarding_image.jpg',
       'title': 'Smart, Supportive Results',
       'subtitle':
-          'Upload a short video and let SpectrumSense provide early insights into your child\'s behavior.',
+          'Receive clear results, actionable recommendations, and reliable guidance while keeping your privacy protected.',
     },
   ];
 
@@ -48,10 +48,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       bottom: false,
       left: false,
       right: false,
+      minimum: EdgeInsets.zero,
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: Column(
           children: [
+            Gap(35),
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -76,14 +78,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(2),
-            child: Image.asset(
-              page['image']!,
-              width: double.infinity,
-              height: 450,
-              fit: BoxFit.cover,
-            ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.asset(
+                  page['image']!,
+                  width: constraints.maxWidth,
+                  height: 480,
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
           ),
           Gap(25),
           Padding(
@@ -93,7 +99,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 CustomText(
                   text: page['title']!,
                   size: 24,
-                  color: Color(0xff000000),
+                  color: AppColors.textPrimary,
                   weight: FontWeight.w600,
                   textAlign: TextAlign.center,
                 ),
@@ -106,6 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   textAlign: TextAlign.center,
                   height: 1.7,
                 ),
+                Gap(15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(_pages.length, (index) {
@@ -127,7 +134,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
 
-          Gap(25),
+          Gap(20),
 
           ElevatedButton(
             style: ElevatedButton.styleFrom(
