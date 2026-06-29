@@ -1,3 +1,4 @@
+import 'package:neuronest/core/constants/app_colors.dart';
 import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class CustomRadioList extends StatelessWidget {
       title: CustomText(
         text: text,
         size: fontSize ?? 23,
-        color: isSelected ? Colors.white : Color(0xff000000),
+        color: isSelected ? Colors.white : AppColors.textPrimary,
         weight: FontWeight.w500,
       ),
       value: val,

@@ -1,3 +1,4 @@
+import 'package:neuronest/core/constants/app_colors.dart';
 import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class CustomElevatedbutton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        backgroundColor: backgroundColor ?? const Color(0xff5DB7DE),
+        backgroundColor: backgroundColor ??  AppColors.secondary,
         minimumSize: const Size(double.infinity, 50),
       ),
       onPressed: onPressed,

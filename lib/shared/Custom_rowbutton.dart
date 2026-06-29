@@ -1,3 +1,4 @@
+import 'package:neuronest/core/constants/app_colors.dart';
 import 'package:neuronest/shared/custom_text.dart';
 import 'package:neuronest/shared/custom_textbutton.dart';
 import 'package:flutter/material.dart';
@@ -25,14 +26,14 @@ class CustomRowButton extends StatelessWidget {
         CustomText(
           text: text,
           size: sizedText,
-          color: Color(0xff000000),
+          color: AppColors.textPrimary,
           weight: FontWeight.w500,
           textAlign: TextAlign.center,
         ),
         CustomTextButton(
           onPressed: onPressed,
           text: textButton,
-          color: Color(0xff5DB7DE),
+          color: AppColors.secondary,
           size: sizedText,
           weight: FontWeight.w600,
         ),

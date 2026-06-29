@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:neuronest/core/constants/app_colors.dart';
 
 class CustomTextfield extends StatefulWidget {
   const CustomTextfield({
@@ -47,7 +48,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
           ? TextInputType.visiblePassword
           : widget.keyboard,
       controller: widget.controller,
-      cursorColor: Colors.black,
+      cursorColor: AppColors.textPrimary,
       cursorHeight: 20,
       validator: widget.validator,
       obscureText: _obscureText,
@@ -65,19 +66,19 @@ class _CustomTextfieldState extends State<CustomTextfield> {
             : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Color(0xffD9D9D9), width: 2),
+          borderSide: BorderSide(color: AppColors.border, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Color(0xffD9D9D9), width: 2),
+          borderSide: BorderSide(color: AppColors.border, width: 2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Color(0xffD9D9D9), width: 2),
+          borderSide: BorderSide(color: AppColors.border, width: 2),
         ),
         labelText: widget.hint,
-        labelStyle: TextStyle(color: Colors.black),
-        fillColor: Color(0xffFFFFFF),
+        labelStyle: TextStyle(color: AppColors.textPrimary),
+        fillColor: AppColors.background,
         filled: true,
       ),
     );
