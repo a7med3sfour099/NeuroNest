@@ -94,6 +94,7 @@ class RiskGauge extends StatelessWidget {
               GaugeAnnotation(
                 angle: 90,
                 positionFactor: 0.70,
+                // widget: const SizedBox.shrink(),
                 widget: Text(
                   'Risk Level',
                   style: TextStyle(fontSize: 28, color: Colors.black),
@@ -107,8 +108,8 @@ class RiskGauge extends StatelessWidget {
   }
 
   String _getRiskLevel(double val) {
-    if (val <= 40) return 'Low';
-    if (val <= 60) return 'Moderate';
+    if (val <= 33) return 'Low';
+    if (val <= 66) return 'Moderate';
     return 'High';
   }
 }

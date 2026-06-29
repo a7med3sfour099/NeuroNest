@@ -1,5 +1,4 @@
 import 'package:neuronest/core/constants/app_colors.dart';
-import 'package:neuronest/core/network/api_service.dart';
 import 'package:neuronest/features/Home/providers/child_provider.dart';
 import 'package:neuronest/features/Home/widgets/birth_date_widg.dart';
 import 'package:neuronest/features/assessmentQues/providers/screening_provider.dart';
@@ -36,7 +35,7 @@ class _ChildInfoViewState extends State<ChildInfoView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 90.0, horizontal: 10.0),
           child: Form(
