@@ -122,7 +122,7 @@ class _OtpVerificationSignupViewState extends State<OtpVerificationSignupView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(

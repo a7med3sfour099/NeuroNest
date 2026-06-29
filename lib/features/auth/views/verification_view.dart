@@ -31,7 +31,7 @@ class _VerificationViewState extends State<VerificationView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 122.0,
@@ -60,8 +60,7 @@ class _VerificationViewState extends State<VerificationView> {
                     ),
                     Gap(4),
                     CustomText(
-                      text:
-                          'We sent a password reset line to example@gmail.com',
+                      text: 'We sent a password reset line to $email',
                       size: 20,
                       color: Color(0xff6c6969),
                       weight: FontWeight.w400,

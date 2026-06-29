@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:neuronest/core/constants/app_colors.dart';
 import 'package:neuronest/core/utils/validators.dart';
+import 'package:neuronest/features/Home/providers/child_provider.dart';
 import 'package:neuronest/features/auth/providers/auth_provider.dart';
 import 'package:neuronest/shared/Custom_rowbutton.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
@@ -10,7 +11,6 @@ import 'package:neuronest/shared/custom_textbutton.dart';
 import 'package:neuronest/shared/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:neuronest/shared/custom_outlinedbutton.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
@@ -38,7 +38,7 @@ class _LoginViewState extends State<LoginView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -66,7 +66,7 @@ class _LoginViewState extends State<LoginView> {
                           CustomText(
                             text: 'Login to your account',
                             size: 23,
-                            color: Color(0xff000000),
+                            color: AppColors.textPrimary,
                             weight: FontWeight.w700,
                             textAlign: TextAlign.center,
                           ),
@@ -74,7 +74,7 @@ class _LoginViewState extends State<LoginView> {
                           CustomText(
                             text: 'Welcome back please insert your details',
                             size: 20,
-                            color: Color(0xff6c6969),
+                            color: AppColors.textTertiary,
                             weight: FontWeight.w400,
                             textAlign: TextAlign.center,
                           ),
@@ -98,8 +98,8 @@ class _LoginViewState extends State<LoginView> {
                           Row(
                             children: [
                               Checkbox(
-                                side: BorderSide(color: Color(0xffD9D9D9)),
-                                activeColor: Colors.blue,
+                                side: BorderSide(color: AppColors.border),
+                                activeColor: AppColors.secondary,
                                 value: rememberMe,
                                 onChanged: (val) =>
                                     setState(() => rememberMe = val!),
@@ -107,7 +107,7 @@ class _LoginViewState extends State<LoginView> {
                               CustomText(
                                 text: 'Remember me',
                                 size: 20,
-                                color: Color(0xff000000),
+                                color: AppColors.textPrimary,
                                 weight: FontWeight.w400,
                               ),
                               Spacer(),
@@ -119,7 +119,7 @@ class _LoginViewState extends State<LoginView> {
                                   );
                                 },
                                 text: 'Forget Password',
-                                color: Colors.blue,
+                                color: AppColors.secondary,
                                 size: 20,
                                 weight: FontWeight.w400,
                               ),
@@ -128,10 +128,6 @@ class _LoginViewState extends State<LoginView> {
                           Gap(25),
                           Consumer<AuthProvider>(
                             builder: (context, authProvider, child) {
-                              if (authProvider.isLoading) {
-                                return const CircularProgressIndicator();
-                              }
-
                               return CustomElevatedbutton(
                                 onPressed: () async {
                                   if (!_formKey.currentState!.validate())
@@ -145,11 +141,39 @@ class _LoginViewState extends State<LoginView> {
                                   if (!mounted) return;
 
                                   if (success) {
-                                    Navigator.pushNamedAndRemoveUntil(
-                                      context,
-                                      '/childinfo',
-                                      (route) => false,
-                                    );
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   SnackBar(
+                                    //     content: const Text('Login successful'),
+                                    //     duration: const Duration(seconds: 1),
+                                    //     backgroundColor: Colors.green[700],
+                                    //     behavior: SnackBarBehavior.floating,
+                                    //     shape: RoundedRectangleBorder(
+                                    //       borderRadius: BorderRadius.circular(
+                                    //         10,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // );
+                                    // await Future.delayed(
+                                    //   const Duration(milliseconds: 1500),
+                                    // );
+                                    final childProvider = context
+                                        .read<ChildProvider>();
+                                    await childProvider.loadChild();
+                                    if (!mounted) return;
+                                    if (childProvider.currentChild == null) {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/childinfo',
+                                        (route) => false,
+                                      );
+                                    } else {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/root',
+                                        (route) => false,
+                                      );
+                                    }
                                   } else {
                                     AwesomeDialog(
                                       context: context,
@@ -163,41 +187,96 @@ class _LoginViewState extends State<LoginView> {
                                     ).show();
                                   }
                                 },
+                                backgroundColor: AppColors.primary,
                                 text: 'Login',
+                                child: authProvider.isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                          color: AppColors.background,
+                                        ),
+                                      )
+                                    : null,
                               );
                             },
                           ),
                           Gap(20),
-                          CustomOutlinedButton(
-                            onPressed: () async {
-                              final authProvider = Provider.of<AuthProvider>(
-                                context,
-                                listen: false,
+                          Consumer<AuthProvider>(
+                            builder: (context, authProvider, child) {
+                              return CustomOutlinedButton(
+                                onPressed: () async {
+                                  final authProvider =
+                                      Provider.of<AuthProvider>(
+                                        context,
+                                        listen: false,
+                                      );
+
+                                  final success = await authProvider
+                                      .signInWithGoogle();
+
+                                  if (!mounted) return;
+
+                                  if (success) {
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   SnackBar(
+                                    //     content: const Text('Login successful'),
+                                    //     duration: const Duration(seconds: 1),
+                                    //     backgroundColor: Colors.green[700],
+                                    //     behavior: SnackBarBehavior.floating,
+                                    //     shape: RoundedRectangleBorder(
+                                    //       borderRadius: BorderRadius.circular(
+                                    //         10,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // );
+                                    // await Future.delayed(
+                                    //   const Duration(milliseconds: 1500),
+                                    // );
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      '/childinfo',
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          authProvider.errorMessage ??
+                                              'Google login failed',
+                                        ),
+                                        duration: const Duration(seconds: 1),
+                                        backgroundColor: AppColors.error,
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+
+                                backgroundImage:
+                                    'assets/auth/google_vector.png',
+                                text: authProvider.isGoogleLoading
+                                    ? ''
+                                    : 'Sign In with google',
+                                showIcon: !authProvider.isGoogleLoading,
+                                child: authProvider.isGoogleLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                          color: AppColors.textPrimary,
+                                        ),
+                                      )
+                                    : null,
                               );
-
-                              final success = await authProvider
-                                  .signInWithGoogle();
-
-                              if (!mounted) return;
-
-                              if (success) {
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  '/childinfo',
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      authProvider.errorMessage ??
-                                          'Google login failed',
-                                    ),
-                                  ),
-                                );
-                              }
                             },
-                            backgroundImage: 'assets/auth/google_vector.png',
-                            text: 'Sign Up with google',
                           ),
                           Gap(18),
                           CustomRowButton(

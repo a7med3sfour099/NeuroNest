@@ -17,7 +17,7 @@ class _SuccessSetViewState extends State<SuccessSetView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 235.0,

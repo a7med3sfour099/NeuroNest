@@ -8,10 +8,12 @@ class AuthProvider extends ChangeNotifier {
 
   UserModel? _currentUser;
   bool _isLoading = false;
+  bool _isGoogleLoading = false;
   String? _errorMessage;
 
   UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
+  bool get isGoogleLoading => _isGoogleLoading;
   String? get errorMessage => _errorMessage;
 
   bool get isLoggedIn => _currentUser != null;
@@ -154,7 +156,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> signInWithGoogle() async {
-    _isLoading = true;
+    _isGoogleLoading = true;
     _errorMessage = null;
     notifyListeners();
 
@@ -173,7 +175,7 @@ class AuthProvider extends ChangeNotifier {
       _errorMessage = e.toString();
       return false;
     } finally {
-      _isLoading = false;
+      _isGoogleLoading = false;
       notifyListeners();
     }
   }

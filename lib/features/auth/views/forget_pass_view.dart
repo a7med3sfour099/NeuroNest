@@ -25,7 +25,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -79,7 +79,10 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                             onPressed: () async {
                               if (!_formKey.currentState!.validate()) return;
 
-                              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                              final authProvider = Provider.of<AuthProvider>(
+                                context,
+                                listen: false,
+                              );
 
                               final success = await authProvider.forgotPassword(
                                 emailController.text.trim(),

@@ -4,6 +4,8 @@ import 'package:neuronest/core/network/api_service.dart';
 import 'package:neuronest/core/utils/pref_helpers.dart';
 import 'package:neuronest/features/auth/data/user_model.dart';
 import 'package:flutter/foundation.dart';
+// Firebase Auth is optional in this project; keep imports guarded
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
@@ -75,20 +77,6 @@ class AuthService {
 
       return response is Map<String, dynamic>;
 
-      // if (response is Map<String, dynamic>) {
-      //   final token = response['token'];
-
-      //   if (token != null) {
-      //     await PrefHelper.saveToken(token.toString());
-      //   }
-
-      //   return UserModel(
-      //     name: response['fullName'] ?? name,
-      //     email: response['email'] ?? email,
-      //     token: token?.toString(),
-      //   );
-      // }
-
       // return null;
     } catch (e) {
       debugPrint('Signup error: $e');
@@ -97,23 +85,20 @@ class AuthService {
   }
 
   Future<bool> verifyEmail({
-  required String email,
-  required String code,
-}) async {
-  try {
-    final response = await _api.post(
-      '/auth/verify-email',
-      {
+    required String email,
+    required String code,
+  }) async {
+    try {
+      final response = await _api.post('/auth/verify-email', {
         'email': email,
         'code': code,
-      },
-    );
+      });
 
-    return response is! ApiError;
-  } catch (e) {
-    return false;
+      return response is! ApiError;
+    } catch (e) {
+      return false;
+    }
   }
-}
 
   Future<bool> forgotPassword(String email) async {
     try {
@@ -151,82 +136,25 @@ class AuthService {
     }
   }
 
-    // Resend verification
+  // Resend verification
   Future<bool> resendVerification(String email) async {
-  try {
-    final response = await _api.post(
-      '/auth/resend-verification',
-      {
+    try {
+      final response = await _api.post('/auth/resend-verification', {
         'email': email,
-      },
-    );
+      });
 
-    return response != null;
-  } catch (e) {
-    debugPrint(e.toString());
-    return false;
+      return response != null;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
   }
-}
 
   // Google Sign-In
-  // final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-
-  // Future<UserModel?> signInWithGoogle() async {
-  //   try {
-  //     await _googleSignIn.initialize(
-  //       serverClientId: AppConstants.googleWebClientId,
-  //     );
-  //   } catch (e) {
-  //     debugPrint('GOOGLE INIT ERROR => $e');
-  //     print("ERROR TYPE => ${e.runtimeType}");
-  //     print("ERROR => $e");
-  //     return null;
-  //   }
-  //   debugPrint("START GOOGLE AUTH");
-
-  //   final GoogleSignInAccount account = await _googleSignIn.authenticate();
-
-  //   debugPrint("ACCOUNT => ${account.email}");
-  //   try {
-  //     // google_sign_in v7: use `authenticate` (throws on failure/cancel depending on config)
-  //     final GoogleSignInAccount account = await _googleSignIn.authenticate();
-
-  //     final GoogleSignInAuthentication auth = account.authentication;
-  //     final String? idToken = auth.idToken;
-
-  //     if (idToken == null) {
-  //       debugPrint('ID TOKEN IS NULL');
-  //       return null;
-  //     }
-
-  //     debugPrint('ID TOKEN: ${idToken.substring(0, 50)}...');
-
-  //     final response = await _api.post('/auth/google-signin', {
-  //       'idToken': idToken,
-  //     });
-
-  //     if (response is ApiError) return null;
-
-  //     if (response is Map<String, dynamic>) {
-  //       final token = response['token'];
-  //       if (token != null) await PrefHelper.saveToken(token.toString());
-
-  //       return UserModel(
-  //         name: response['fullName'] ?? account.displayName ?? '',
-  //         email: response['email'] ?? account.email,
-  //         token: token?.toString(),
-  //       );
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     debugPrint('GOOGLE LOGIN ERROR => $e');
-  //     return null;
-  //   }
-  // }
 
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-
   Future<UserModel?> signInWithGoogle() async {
+    // Use backend Google sign-in with Google ID token only.
     try {
       await _googleSignIn.initialize(
         serverClientId: AppConstants.googleWebClientId,
@@ -234,26 +162,70 @@ class AuthService {
 
       debugPrint("GOOGLE INITIALIZED");
 
-      GoogleSignInAccount? user = await _googleSignIn
-          .attemptLightweightAuthentication();
+      GoogleSignInAccount? googleUser;
 
-      user ??= await _googleSignIn.authenticate();
+      try {
+        googleUser = await _googleSignIn.attemptLightweightAuthentication();
+      } catch (lightweightError) {
+        debugPrint("Lightweight auth failed: $lightweightError");
+      }
 
-      debugPrint("ACCOUNT => ${user.email}");
+      // ignore: prefer_conditional_assignment
+      if (googleUser == null) {
+        googleUser = await _googleSignIn.authenticate();
+      }
 
-      final auth = user.authentication;
+      // ignore: unnecessary_null_comparison, dead_code
+      if (googleUser == null) return null;
 
-      debugPrint("ID TOKEN => ${auth.idToken != null}");
+      debugPrint("ACCOUNT => ${googleUser.email}");
+
+      // Backend needs Google ID token.
+      // FirebaseAuth integration is currently disabled in this project.
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final String? idToken = googleAuth.idToken;
+
+      if (idToken == null || idToken.isEmpty) {
+        debugPrint('GoogleSignInAuthentication.idToken is null/empty');
+        return null;
+      }
+
+      final response = await _api.post('/auth/google-signin', {
+        'idToken': idToken,
+      });
+
+      debugPrint('GOOGLE API RESPONSE: $response');
+
+      if (response is Map<String, dynamic>) {
+        final token = response['token'];
+
+        if (token != null) {
+          await PrefHelper.saveToken(token.toString());
+          debugPrint('GOOGLE AUTH TOKEN SAVED');
+        }
+
+        return UserModel(
+          name: response['fullName'] ?? googleUser.displayName ?? '',
+          email: response['email'] ?? googleUser.email ?? '',
+          token: token?.toString(),
+        );
+      }
+
+      return null;
     } catch (e, s) {
-      debugPrint("GOOGLE LOGIN ERROR => $e");
+      debugPrint("GOOGLE LOGIN CRITICAL ERROR => $e");
       debugPrint("STACK => $s");
+      return null;
     }
-    return null;
   }
 
+  /// Logout
   Future<void> logout() async {
     try {
       await _api.post('/auth/logout', {});
+      await _googleSignIn.signOut();
+      await _googleSignIn.disconnect();
     } catch (e) {
       debugPrint('Logout error: $e');
     } finally {

@@ -151,7 +151,7 @@ class _OtpVerificationPasswordViewState
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -182,8 +182,7 @@ class _OtpVerificationPasswordViewState
                         ),
                         Gap(3),
                         CustomText(
-                          text:
-                              'We sent a password reset code to $email',
+                          text: 'We sent a password reset code to $email',
                           size: 20,
                           color: Color(0xff6c6969),
                           weight: FontWeight.w400,

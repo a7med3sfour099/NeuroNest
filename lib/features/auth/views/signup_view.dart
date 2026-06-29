@@ -37,12 +37,12 @@ class _SignUpViewState extends State<SignUpView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 41.0,
+                vertical: 48.0,
                 horizontal: 10.0,
               ),
               child: Form(
@@ -78,42 +78,64 @@ class _SignUpViewState extends State<SignUpView> {
                             textAlign: TextAlign.center,
                           ),
                           Gap(25),
-                          CustomOutlinedButton(
-                            onPressed: () async {
-                              final authProvider = Provider.of<AuthProvider>(
-                                context,
-                                listen: false,
+                          Consumer<AuthProvider>(
+                            builder: (context, authProvider, child) {
+                              return CustomOutlinedButton(
+                                onPressed: () async {
+                                  final authProvider =
+                                      Provider.of<AuthProvider>(
+                                        context,
+                                        listen: false,
+                                      );
+
+                                  final success = await authProvider
+                                      .signInWithGoogle();
+
+                                  if (!mounted) return;
+
+                                  if (success) {
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      '/childinfo',
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          authProvider.errorMessage ??
+                                              'Google login failed',
+                                        ),
+                                        duration: const Duration(seconds: 1),
+                                        backgroundColor: Colors.redAccent,
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+
+                                backgroundImage:
+                                    'assets/auth/google_vector.png',
+                                text: authProvider.isGoogleLoading
+                                    ? ''
+                                    : 'Sign In with google',
+                                showIcon: !authProvider.isGoogleLoading,
+                                child: authProvider.isGoogleLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                          color: Colors.black,
+                                        ),
+                                      )
+                                    : null,
                               );
-
-                              final success = await authProvider
-                                  .signInWithGoogle();
-
-                              if (!mounted) return;
-
-                              if (success) {
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  '/childinfo',
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      authProvider.errorMessage ??
-                                          'Google login failed',
-                                    ),
-                                    duration: const Duration(seconds: 1),
-                                    backgroundColor: Colors.redAccent,
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                );
-                              }
                             },
-                            backgroundImage: 'assets/auth/google_vector.png',
-                            text: 'Sign Up with google',
                           ),
                           Gap(32),
                           CustomTextfield(
@@ -155,7 +177,7 @@ class _SignUpViewState extends State<SignUpView> {
                             sizedText: 21,
                             textButton: 'Log in',
                           ),
-                          Gap(10),
+                          Gap(18),
                           Consumer<AuthProvider>(
                             builder: (context, authProvider, child) {
                               return CustomElevatedbutton(
@@ -220,6 +242,7 @@ class _SignUpViewState extends State<SignUpView> {
                                           ).show();
                                         }
                                       },
+                                backgroundColor: Color(0xff4a7dcd),
                                 text: authProvider.isLoading
                                     ? 'Creating Account...'
                                     : 'Sign Up',
