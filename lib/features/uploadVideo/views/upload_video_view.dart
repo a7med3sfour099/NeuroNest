@@ -2,47 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/features/uploadVideo/views/analysis_video_view.dart';
 import 'package:neuronest/features/uploadVideo/widgets/container_widg.dart';
 import 'package:neuronest/features/uploadVideo/widgets/custom_row_bulletPoint_widg.dart';
-// Keeping project imports minimal; we directly render the upload container UI here.
-
 import 'package:neuronest/shared/custom_text.dart';
-import 'dart:io';
-
-import 'package:video_player/video_player.dart';
 
 class UploadVideoView extends StatefulWidget {
-  final bool isLoading;
-  final VoidCallback? onUploadPressed;
-  final Function(Map<String, dynamic>)? onVideoAnalyzed;
-
-  const UploadVideoView({
-    super.key,
-    this.isLoading = false,
-    this.onUploadPressed,
-    this.onVideoAnalyzed,
-  });
+  final int childId;
+  const UploadVideoView({super.key, required this.childId});
 
   @override
   State<UploadVideoView> createState() => _UploadVideoViewState();
 }
 
 class _UploadVideoViewState extends State<UploadVideoView> {
-  /// Selected video file.
   XFile? selectedVideo;
-
-  /// Video preview controller.
-  VideoPlayerController? controller;
-
-  /// Used only for UI states (e.g., upload button spinner).
-  bool isUploading = false;
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    controller = null;
-    super.dispose();
-  }
 
   Future<void> _showVideoSourceBottomSheet() async {
     await showModalBottomSheet<void>(
@@ -61,7 +35,7 @@ class _UploadVideoViewState extends State<UploadVideoView> {
                 title: const Text('Upload from Gallery'),
                 onTap: () async {
                   Navigator.of(ctx).pop();
-                  await _pickVideoFromGallery();
+                  await _pickVideo(ImageSource.gallery);
                 },
               ),
               ListTile(
@@ -69,7 +43,7 @@ class _UploadVideoViewState extends State<UploadVideoView> {
                 title: const Text('Record Video'),
                 onTap: () async {
                   Navigator.of(ctx).pop();
-                  await _recordVideo();
+                  await _pickVideo(ImageSource.camera);
                 },
               ),
               const SizedBox(height: 8),
@@ -80,14 +54,15 @@ class _UploadVideoViewState extends State<UploadVideoView> {
     );
   }
 
-  Future<void> _pickVideoFromGallery() async {
+  Future<void> _pickVideo(ImageSource source) async {
     final picker = ImagePicker();
     try {
-      final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
-      if (!mounted) return;
+      final XFile? video = await picker.pickVideo(source: source);
       if (video == null) return;
 
-      await _initializeVideoPlayer(video);
+      setState(() {
+        selectedVideo = video;
+      });
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -99,85 +74,11 @@ class _UploadVideoViewState extends State<UploadVideoView> {
     }
   }
 
-  Future<void> _recordVideo() async {
-    final picker = ImagePicker();
-    try {
-      final XFile? video = await picker.pickVideo(source: ImageSource.camera);
-      if (!mounted) return;
-      if (video == null) return;
-
-      await _initializeVideoPlayer(video);
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error recording video: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Future<void> _initializeVideoPlayer(XFile video) async {
-    // Dispose previous controller (if any).
-    await controller?.dispose();
-
-    final nextController = VideoPlayerController.file(
-      // image_picker provides a file path we can use for VideoPlayerController.
-      File(video.path),
-    );
-
-    setState(() {
-      selectedVideo = video;
-      controller = nextController;
-    });
-
-    try {
-      await nextController.initialize();
-      if (!mounted) return;
-
-      // await nextController.setLooping(true);
-      await nextController.play();
-
-      // Ensure the UI refreshes after initialization.
-      if (mounted) {
-        setState(() {});
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error initializing video player: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Widget _buildVideoPreview() {
-    final c = controller;
-    if (c == null || !c.value.isInitialized) {
-      return const Center(
-        child: SizedBox(
-          height: 30,
-          width: 30,
-          child: CircularProgressIndicator(strokeWidth: 2.5),
-        ),
-      );
-    }
-
-    final aspectRatio = c.value.aspectRatio;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: AspectRatio(aspectRatio: aspectRatio, child: VideoPlayer(c)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor:
+          AppColors.background,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 65.0, horizontal: 9.0),
         child: SingleChildScrollView(
@@ -190,68 +91,70 @@ class _UploadVideoViewState extends State<UploadVideoView> {
               ),
               const Gap(25),
 
-              /// Upload Video Section (bottom sheet).
+              /// دبة رفع الفيديو
               GestureDetector(
-                onTap: isUploading ? null : _showVideoSourceBottomSheet,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 7,
-                        horizontal: 28,
+                onTap: _showVideoSourceBottomSheet,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 25,
+                    horizontal: 28,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F8FF),
+                    borderRadius: BorderRadius.circular(10),
+                    border: selectedVideo != null
+                        ? Border.all(color: Colors.green, width: 2)
+                        : null,
+                  ),
+                  child: Column(
+                    children: [
+                      Visibility(
+                        visible: selectedVideo == null,
+                        child: Image.asset(
+                          'assets/video/upload 1.png',
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF0F8FF),
-                        borderRadius: BorderRadius.circular(10),
+                      Visibility(
+                        visible: selectedVideo != null,
+                        child: Icon(
+                          Icons.check_circle_sharp,
+                          size: 100,
+                          color: Colors.green,
+                        ),
                       ),
-                      child: Column(
-                        children: [
-                          const Gap(8),
-                          if (selectedVideo == null) ...[
-                            Image.asset(
-                              'assets/video/upload 1.png',
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            ),
-                            const Gap(2),
-                            const Text(
-                              'Tap to upload or record your video',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF000000),
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const Gap(2),
-                            const Text(
-                              '(Max 60 seconds)',
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFF6C6969),
-                              ),
-                            ),
-                          ] else ...[
-                            SizedBox(
-                              height: 160,
-                              width: double.infinity,
-                              child: _buildVideoPreview(),
-                            ),
-                          ],
-                        ],
+                      const Gap(10),
+                      Text(
+                        selectedVideo == null
+                            ? 'Tap to upload or record your video'
+                            : 'Video Selected Successfully!',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                  ],
+                      const Gap(2),
+                      Text(
+                        selectedVideo == null
+                            ? '(Max 60 seconds)'
+                            : 'Tap to change video',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF6C6969),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
               const Gap(39),
-
-              /// (Bullet Points)
               Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: Column(
@@ -278,37 +181,48 @@ class _UploadVideoViewState extends State<UploadVideoView> {
               ),
               const Gap(15),
 
-              /// Upload Button (no navigation/analyze yet).
               Container(
                 width: double.infinity,
                 height: 54,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: const Color(0xFF2196F3),
+                  color: selectedVideo == null
+                      ? Colors.grey
+                      : const Color(0xFF2196F3),
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12),
-                    onTap: null,
-                    child: Center(
-                      child: isUploading
-                          ? const SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
+                    onTap: selectedVideo == null
+                        ? () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please select a video first!'),
                               ),
-                            )
-                          : const Text(
-                              'Upload Video',
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                            );
+                          }
+                        : () {
+                            // الانتقال وتمرير مسار الفيديو للصفحة الجاية
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PreviewAndAnalyzeView(
+                                  videoPath: selectedVideo!.path,
+                                  childId: widget.childId,
+                                ),
                               ),
-                            ),
+                            );
+                          },
+                    child: const Center(
+                      child: Text(
+                        'Upload Video',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),

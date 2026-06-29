@@ -1,8 +1,6 @@
 import 'package:neuronest/core/constants/app_colors.dart';
-import 'package:neuronest/features/uploadVideo/widgets/container_widg.dart';
-import 'package:neuronest/features/uploadVideo/widgets/custom_card_widg.dart';
+import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -16,78 +14,50 @@ class StartVideoView extends StatefulWidget {
 class _StartVideoViewState extends State<StartVideoView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        leading: IconButton(
-          iconSize: 33,
-          icon: const Icon(CupertinoIcons.arrow_left, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: CustomText(
-          text: 'Autism Assessment',
-          size: 23,
-          color: Color(0xff000000),
-          weight: FontWeight.w700,
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(height: 1, thickness: 1, color: Color(0xff6C6969)),
-        ),
-      ),
-      backgroundColor: AppColors.primary,
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              Gap(20),
-              CustomContainer(
-                width: 319,
-                title: 'How would you like to start?',
-                subtitle:
-                    'Select the way you prefer to help us assess your child.',
-              ),
-              Gap(5),
-
-              /// First Card
-              CustomCard(
-                onTap: () =>
-                    Navigator.pushReplacementNamed(context, '/uploadvideo'),
-                shapeColor: Color(0xff5DB7DE).withOpacity(0.75),
-                image: 'assets/video/upload 1.png',
-                text: 'Upload Child Video',
-                subText: 'Analyze a video of your child.',
-                bColor: Color(0xff5DB7DE),
-                bText: 'Upload Video',
-              ),
-              Gap(5),
-
-              /// Second Card
-              CustomCard(
-                onTap: () =>
-                    Navigator.pushReplacementNamed(context, '/startques'),
-                shapeColor: Color(0xffEF7902),
-                image: 'assets/ques/ques_view.png',
-                text: 'Answer Questions',
-                subText: 'Complete a questionnaire.',
-                bColor: Color(0xffEF7902),
-                bText: 'Start Questions',
-              ),
-              Gap(20),
-              SizedBox(
-                width: 314,
-                height: 52,
-                child: CustomText(
-                  text:
-                      'You can upload a video of your child or answer a series of questions to assess them for autism.',
-                  size: 14,
-                  color: Color(0xff6C6969),
-                  weight: FontWeight.w400,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 198.0,
+              horizontal: 15.0,
+            ),
+            child: Column(
+              children: [
+                Center(
+                  child: Image.asset(
+                    'assets/video/start_video.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-            ],
+                // Gap(3),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      Gap(3),
+                      CustomText(
+                        text:
+                            'You can start the assessment by uploading a video of your daily activities.',
+                        size: 20,
+                        color: AppColors.textTertiary,
+                        weight: FontWeight.w400,
+                        textAlign: TextAlign.center,
+                      ),
+                      Gap(32),
+                      CustomElevatedbutton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/uploadvideo');
+                        },
+                        text: 'Start Uploading Video',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
