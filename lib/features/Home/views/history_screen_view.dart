@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:neuronest/features/Home/providers/history_provider.dart';
+import 'package:neuronest/features/Home/providers/child_provider.dart';
 
 class AssessmentHistoryScreen extends StatefulWidget {
   const AssessmentHistoryScreen({super.key});
@@ -8,8 +12,34 @@ class AssessmentHistoryScreen extends StatefulWidget {
       _AssessmentHistoryScreenState();
 }
 
+String formatDate(String dateString) {
+  final date = DateTime.parse(dateString);
+
+  return DateFormat('dd MMM yyyy').format(date);
+}
+
 class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() async {
+      final childProvider = context.read<ChildProvider>();
+
+      if (childProvider.currentChild == null) {
+        await childProvider.loadChild();
+      }
+      print("Current Child => ${childProvider.currentChild?.childID}");
+
+      if (childProvider.currentChild != null) {
+        await context.read<HistoryProvider>().loadHistory(
+          childProvider.currentChild!.childID,
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -19,6 +49,7 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<HistoryProvider>();
     return Scaffold(
       backgroundColor: const Color(0xFFF4F7FE),
       extendBodyBehindAppBar: true,
@@ -56,9 +87,9 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
             child: Column(
               children: [
                 // Summary Card
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: SummaryCard(),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SummaryCard(provider: provider),
                 ),
 
                 // // Search Bar
@@ -87,64 +118,107 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
                 const SizedBox(height: 12),
 
                 // Assessments List
+                // Expanded(
+                //   child: ListView(
+                //     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                //     children: const [
+                //       AssessmentListItem(
+                //         color: Color(0xFFFF9800), // Orange
+                //         icon: Icons.assignment,
+                //         type: "Questionnaire",
+                //         date: "13 May",
+                //         result: "High Probability",
+                //         resultColor: Colors.red,
+                //       ),
+                //       SizedBox(height: 12),
+                //       AssessmentListItem(
+                //         color: Color(0xFF9C27B0), // Purple
+                //         icon: Icons.description,
+                //         type: "Document Review",
+                //         date: "3 May",
+                //         result: "Moderate",
+                //         resultColor: Colors.orange,
+                //       ),
+                //       SizedBox(height: 12),
+                //       AssessmentListItem(
+                //         color: Color(0xFF2196F3), // Blue
+                //         icon: Icons.videocam,
+                //         type: "Video Session",
+                //         date: "22 April",
+                //         result: "Low Probability",
+                //         resultColor: Colors.green,
+                //       ),
+                //       SizedBox(height: 12),
+                //       AssessmentListItem(
+                //         color: Color(0xFF2196F3), // Blue
+                //         icon: Icons.videocam,
+                //         type: "Video Session",
+                //         date: "22 April",
+                //         result: "Low Probability",
+                //         resultColor: Colors.green,
+                //       ),
+                //       SizedBox(height: 12),
+                //       AssessmentListItem(
+                //         color: Color(0xFF9C27B0), // Purple
+                //         icon: Icons.description,
+                //         type: "Document Review",
+                //         date: "3 May",
+                //         result: "Moderate",
+                //         resultColor: Colors.orange,
+                //       ),
+                //       SizedBox(height: 12),
+                //       AssessmentListItem(
+                //         color: Color(0xFF2196F3), // Blue
+                //         icon: Icons.videocam,
+                //         type: "Video Session",
+                //         date: "22 April",
+                //         result: "Low Probability",
+                //         resultColor: Colors.green,
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    children: const [
-                      AssessmentListItem(
-                        color: Color(0xFFFF9800), // Orange
-                        icon: Icons.assignment,
-                        type: "Questionnaire",
-                        date: "13 May",
-                        result: "High Probability",
-                        resultColor: Colors.red,
-                      ),
-                      SizedBox(height: 12),
-                      AssessmentListItem(
-                        color: Color(0xFF9C27B0), // Purple
-                        icon: Icons.description,
-                        type: "Document Review",
-                        date: "3 May",
-                        result: "Moderate",
-                        resultColor: Colors.orange,
-                      ),
-                      SizedBox(height: 12),
-                      AssessmentListItem(
-                        color: Color(0xFF2196F3), // Blue
-                        icon: Icons.videocam,
-                        type: "Video Session",
-                        date: "22 April",
-                        result: "Low Probability",
-                        resultColor: Colors.green,
-                      ),
-                      SizedBox(height: 12),
-                      AssessmentListItem(
-                        color: Color(0xFF2196F3), // Blue
-                        icon: Icons.videocam,
-                        type: "Video Session",
-                        date: "22 April",
-                        result: "Low Probability",
-                        resultColor: Colors.green,
-                      ),
-                      SizedBox(height: 12),
-                      AssessmentListItem(
-                        color: Color(0xFF9C27B0), // Purple
-                        icon: Icons.description,
-                        type: "Document Review",
-                        date: "3 May",
-                        result: "Moderate",
-                        resultColor: Colors.orange,
-                      ),
-                      SizedBox(height: 12),
-                      AssessmentListItem(
-                        color: Color(0xFF2196F3), // Blue
-                        icon: Icons.videocam,
-                        type: "Video Session",
-                        date: "22 April",
-                        result: "Low Probability",
-                        resultColor: Colors.green,
-                      ),
-                    ],
+                  child: Builder(
+                    builder: (_) {
+                      if (provider.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (provider.history == null) {
+                        return const Center(
+                          child: Text("Failed to load history"),
+                        );
+                      }
+
+                      if (provider.history!.history.isEmpty) {
+                        return const Center(child: Text("No assessments yet"));
+                      }
+
+                      return ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: provider.history!.history.length,
+                        itemBuilder: (context, index) {
+                          final item = provider.history!.history[index];
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: AssessmentListItem(
+                              color: Colors.blue,
+                              icon: Icons.assignment,
+                              type: item.screeningType,
+                              date: formatDate(item.screeningDate),
+                              result: item.riskLevel,
+                              resultColor: item.riskLevel == "High"
+                                  ? Colors.red
+                                  : item.riskLevel == "Moderate"
+                                  ? Colors.orange
+                                  : Colors.green,
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
 
@@ -195,7 +269,8 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
 
 // ==================== Summary Card ====================
 class SummaryCard extends StatelessWidget {
-  const SummaryCard({super.key});
+  final HistoryProvider provider;
+  const SummaryCard({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context) {
@@ -242,9 +317,13 @@ class SummaryCard extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      "April 12, 2024",
-                      style: TextStyle(
+                    Text(
+                      provider.history!.stats.lastAssessmentDate == null
+                          ? "No assessment"
+                          : formatDate(
+                              provider.history!.stats.lastAssessmentDate!,
+                            ),
+                      style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
@@ -264,9 +343,9 @@ class SummaryCard extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-                    const Text(
-                      "15",
-                      style: TextStyle(
+                    Text(
+                      "${provider.history?.stats.total ?? 0}",
+                      style: const TextStyle(
                         fontSize: 36,
                         height: 1.1,
                         fontWeight: FontWeight.bold,
@@ -301,8 +380,8 @@ class SummaryCard extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      "High Probability",
+                    Text(
+                      provider.history?.stats.currentRiskLevel ?? "N/A",
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -337,7 +416,7 @@ class SearchBarWidget extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        textDirection: TextDirection.ltr,
+        textDirection: Directionality.of(context),
         decoration: const InputDecoration(
           hintText: "Search",
           hintStyle: TextStyle(color: Colors.black45),
