@@ -38,8 +38,8 @@ class _DateOfBirthFieldState extends State<DateOfBirthField> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime(2005),
-      firstDate: DateTime(2000),
+      initialDate: _selectedDate ?? DateTime(2018),
+      firstDate: DateTime(2010),
       lastDate: DateTime.now(),
     );
 
