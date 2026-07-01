@@ -30,10 +30,16 @@ class VideoService {
       if (response.data is Map<String, dynamic>) {
         return _parseAnalysisResult(response.data);
       }
-      return _getDefaultAnalysisResult();
+
+      throw Exception('Invalid data format received from server.');
+    } on DioException catch (e) {
+      print('Video analysis API error: ${e.message}');
+      throw Exception(
+        'Failed to analyze video: Please check your connection and try again.',
+      );
     } catch (e) {
-      print('Video upload error: $e');
-      return _getDefaultAnalysisResult();
+      print('Unexpected error during video analysis: $e');
+      throw Exception('An unexpected error occurred during analysis.');
     }
   }
 
@@ -64,6 +70,7 @@ class VideoService {
       return response.data;
     } catch (e) {
       print('Video upload error: $e');
+      // Rethrow so the Provider layer knows the upload actually failed
       rethrow;
     }
   }
@@ -78,7 +85,8 @@ class VideoService {
       return null;
     } catch (e) {
       print('Get analysis result error: $e');
-      return null;
+      // We throw instead of returning null to differentiate between "Not Found" and "Network Error"
+      throw Exception('Failed to retrieve analysis results.');
     }
   }
 
@@ -92,7 +100,7 @@ class VideoService {
       return [];
     } catch (e) {
       print('Get video history error: $e');
-      return [];
+      throw Exception('Failed to load video history.');
     }
   }
 
@@ -103,7 +111,7 @@ class VideoService {
       return response.statusCode == 200;
     } catch (e) {
       print('Delete video error: $e');
-      return false;
+      throw Exception('Failed to delete video assessment.');
     }
   }
 
@@ -128,8 +136,9 @@ class VideoService {
       'vocalizations': _toDouble(data['vocal_score'] ?? data['vocalizations']),
       'overallScore': _toDouble(data['overall_score'] ?? data['overallScore']),
       'analysisStatus': data['status'] ?? data['analysisStatus'] ?? 'completed',
-      'recommendations':
-          data['recommendations'] ?? _getDefaultRecommendations(),
+      // Safe fallback for an empty list if the server forgets to send recommendations,
+      // but NOT fake clinical data.
+      'recommendations': data['recommendations'] ?? <String>[],
       'videoId': data['videoId'] ?? data['id'],
       'createdAt': data['createdAt'],
     };
@@ -141,31 +150,5 @@ class VideoService {
     if (value is double) return value;
     if (value is String) return double.tryParse(value) ?? 0.0;
     return 0.0;
-  }
-
-  Map<String, dynamic> _getDefaultAnalysisResult() {
-    return {
-      'socialInteraction': 45.0,
-      'communication': 50.0,
-      'repetitiveBehaviors': 30.0,
-      'eyeContact': 60.0,
-      'facialExpressions': 55.0,
-      'gestures': 40.0,
-      'vocalizations': 65.0,
-      'overallScore': 48.0,
-      'analysisStatus': 'completed',
-      'recommendations': _getDefaultRecommendations(),
-      'videoId': null,
-      'createdAt': DateTime.now().toIso8601String(),
-    };
-  }
-
-  List<String> _getDefaultRecommendations() {
-    return [
-      '✓ Continue monitoring developmental milestones',
-      '✓ Encourage social interaction and play',
-      '✓ Maintain consistent routines',
-      '✓ Consult with pediatrician for concerns',
-    ];
   }
 }

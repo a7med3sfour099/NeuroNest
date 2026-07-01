@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neuronest/core/constants/app_colors.dart'; // NEW IMPORT
 import 'package:neuronest/features/Home/providers/child_provider.dart';
 import 'package:neuronest/features/Home/providers/history_provider.dart';
 import 'package:neuronest/features/Home/widgets/assessment_buttons.dart';
@@ -17,13 +18,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isInitLoading = true;
+  String? _errorMessage;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchDashboardData();
+    });
+  }
 
-    Future.microtask(() async {
+  Future<void> _fetchDashboardData() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isInitLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
       final childProvider = context.read<ChildProvider>();
-
       await childProvider.loadChild();
 
       if (!mounted) return;
@@ -33,27 +48,28 @@ class _HomeScreenState extends State<HomeScreen> {
           childProvider.currentChild!.childID,
         );
       }
-    });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage =
+              "Failed to connect to the server. Please check your internet connection.";
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isInitLoading = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7FE),
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          "Dashboard",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-          ),
-        ),
-        // centerTitle: true,
-      ),
+
+      appBar: AppBar(title: const Text("Dashboard")),
 
       body: Stack(
         children: [
@@ -67,68 +83,78 @@ class _HomeScreenState extends State<HomeScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Color(0xFFD0E5FF), Color(0xFFF4F7FE)],
+
+                  colors: [AppColors.gradientStart, AppColors.background],
                 ),
               ),
             ),
           ),
-
-          SafeArea(
-            child: Consumer2<ChildProvider, HistoryProvider>(
-              builder: (context, childProvider, historyProvider, _) {
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    await childProvider.loadChild();
-
-                    if (childProvider.currentChild != null) {
-                      await historyProvider.loadHistory(
-                        childProvider.currentChild!.childID,
-                      );
-                    }
-                  },
-
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(20),
-
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        WelcomeCard(),
-
-                        SizedBox(height: 18),
-
-                        ChildCard(),
-
-                        SizedBox(height: 22),
-
-                        // TestyWidget(),
-
-                        // SizedBox(height: 22),
-                        AssessmentButtons(),
-
-                        SizedBox(height: 22),
-
-                        UpcommingAppointment(),
-
-                        SizedBox(height: 22),
-
-                        StatsCards(),
-
-                        SizedBox(height: 22),
-
-                        LatestAssessmentCard(),
-
-                        SizedBox(height: 40),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          SafeArea(child: _buildBodyContent()),
         ],
       ),
+    );
+  }
+
+  Widget _buildBodyContent() {
+    if (_isInitLoading) {
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.wifi_off_rounded, size: 60, color: Colors.grey),
+              const SizedBox(height: 16),
+              Text(
+                _errorMessage!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16, color: Colors.black54),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _fetchDashboardData,
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Consumer2<ChildProvider, HistoryProvider>(
+      builder: (context, childProvider, historyProvider, _) {
+        return RefreshIndicator(
+          onRefresh: _fetchDashboardData,
+          color: AppColors.primary, // Set spinner color
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                WelcomeCard(),
+                SizedBox(height: 18),
+                ChildCard(),
+                SizedBox(height: 22),
+                AssessmentButtons(),
+                SizedBox(height: 22),
+                UpcommingAppointment(),
+                SizedBox(height: 22),
+                StatsCards(),
+                SizedBox(height: 22),
+                LatestAssessmentCard(),
+                SizedBox(height: 40),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

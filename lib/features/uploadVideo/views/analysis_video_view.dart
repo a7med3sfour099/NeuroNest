@@ -127,9 +127,8 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
       );
 
       print("2- Upload Finished");
-print("Success => $success");
-print("Result => ${provider.result}");
-
+      print("Success => $success");
+      print("Result => ${provider.result}");
 
       if (!mounted) return;
 
@@ -137,7 +136,7 @@ print("Result => ${provider.result}");
         print(provider.result);
         print(provider.result?.riskLevel);
         print(provider.result?.totalScore);
-          print("3- Going To Result Screen");
+        print("3- Going To Result Screen");
 
         Navigator.pushReplacement(
           context,
@@ -290,7 +289,6 @@ print("Result => ${provider.result}");
                     ),
             ),
             const Gap(40),
-
             Container(
               width: double.infinity,
               height: 54,
@@ -305,30 +303,37 @@ print("Result => ${provider.result}");
                   onTap: _isAnalyzing ? null : _startVideoAnalysis,
                   child: Center(
                     child: _isAnalyzing
-                        ? const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'AI is analyzing video...',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Gap(15),
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                            ],
+                        ? Consumer<VideoProvider>(
+                            // Listen to the provider to get the dynamic message
+                            builder: (context, provider, child) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    provider.loadingMessage.isNotEmpty
+                                        ? provider.loadingMessage
+                                        : 'Processing...',
+                                    style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const Gap(15),
+                                  const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           )
                         : const Text(
-                            'Analysis Video',
+                            'Analyze Video',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
