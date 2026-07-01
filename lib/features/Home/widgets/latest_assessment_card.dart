@@ -62,7 +62,10 @@ class LatestAssessmentCard extends StatelessWidget {
 
     final parsedDate =
         DateTime.tryParse(assessment.screeningDate) ?? DateTime.now();
-
+    final bool isVideo = (assessment.screeningType).toLowerCase().contains(
+      "video",
+    );
+    final Color itemColor = isVideo ? Colors.blue : Color(0xFFFF9800);
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: cardDecoration, // واستخدمناه هنا كمان
@@ -73,8 +76,13 @@ class LatestAssessmentCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.blue.withOpacity(.12),
-                child: const Icon(Icons.assignment, color: Colors.blue),
+                backgroundColor: isVideo
+                    ? Colors.blue.withOpacity(.12)
+                    : Colors.orange.withOpacity(.12),
+                child: Icon(
+                  isVideo ? Icons.videocam_outlined : Icons.assignment_outlined,
+                  color: itemColor,
+                ),
               ),
               const SizedBox(width: 12),
               const Text(
@@ -116,9 +124,7 @@ class LatestAssessmentCard extends StatelessWidget {
               const Icon(Icons.calendar_today, size: 18, color: Colors.grey),
               const SizedBox(width: 8),
               Text(
-                DateFormat(
-                  "dd MMM yyyy",
-                ).format(parsedDate),
+                DateFormat("dd MMM yyyy").format(parsedDate),
                 style: const TextStyle(color: Colors.black54),
               ),
             ],

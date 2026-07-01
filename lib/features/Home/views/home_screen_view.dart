@@ -5,7 +5,6 @@ import 'package:neuronest/features/Home/widgets/assessment_buttons.dart';
 import 'package:neuronest/features/Home/widgets/child_card.dart';
 import 'package:neuronest/features/Home/widgets/latest_assessment_card.dart';
 import 'package:neuronest/features/Home/widgets/stats_cards.dart';
-import 'package:neuronest/features/Home/widgets/testy.dart';
 import 'package:neuronest/features/Home/widgets/upcomming_widget.dart';
 import 'package:neuronest/features/Home/widgets/welcome_card.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
       final childProvider = context.read<ChildProvider>();
 
       await childProvider.loadChild();
+
+      if (!mounted) return;
 
       if (childProvider.currentChild != null) {
         await context.read<HistoryProvider>().loadHistory(

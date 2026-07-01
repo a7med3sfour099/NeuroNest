@@ -395,26 +395,22 @@ import 'package:neuronest/features/uploadVideo/providers/video_provider.dart';
 class VideoResultView extends StatelessWidget {
   final VoidCallback? onBackPressed;
 
-  const VideoResultView({
-    super.key,
-    this.onBackPressed,
-  });
+  const VideoResultView({super.key, this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
-    // 1️⃣ قراءة النتيجة مباشرة من الـ Provider
+    print("VideoResultView Build");
     final result = context.watch<VideoProvider>().result;
 
-    // 2️⃣ إظهار الـ Loading في حالة عدم وصول البيانات بعد
+    print(result);
+    print(result?.riskLevel);
+    print(result?.totalScore);
+    print("RESULT => $result");
+
     if (result == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // 3️⃣ تحديد الألوان بناءً على مستوى الخطورة القادم من الـ API
     Color riskColor;
     Color riskBgColor;
 
@@ -475,9 +471,11 @@ class VideoResultView extends StatelessWidget {
     );
   }
 
-  // كارت النتيجة الإجمالية المعتمد على بيانات الـ API فقط
   Widget _buildOverallAssessmentCard(
-      VideoResultModel result, Color riskColor, Color riskBgColor) {
+    VideoResultModel result,
+    Color riskColor,
+    Color riskBgColor,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xffDBEFF8),
@@ -535,7 +533,6 @@ class VideoResultView extends StatelessWidget {
     );
   }
 
-  // كارت التوصيات الديناميكي بناءً على الـ Risk Level القادم من الـ API
   Widget _buildRecommendationsCard(String riskLevel) {
     List<String> recommendations;
 

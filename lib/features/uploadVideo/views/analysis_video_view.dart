@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:neuronest/features/assessmentResult/views/video_result_view.dart';
 import 'package:neuronest/features/uploadVideo/providers/video_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -10,7 +11,11 @@ class PreviewAndAnalyzeView extends StatefulWidget {
   final String videoPath;
   final int childId;
 
-  const PreviewAndAnalyzeView({super.key, required this.videoPath, required this.childId});
+  const PreviewAndAnalyzeView({
+    super.key,
+    required this.videoPath,
+    required this.childId,
+  });
 
   @override
   State<PreviewAndAnalyzeView> createState() => _PreviewAndAnalyzeViewState();
@@ -105,50 +110,52 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
   //   }
   // }
 
- Future<void> _startVideoAnalysis() async {
+  Future<void> _startVideoAnalysis() async {
+    _controller?.pause();
 
-  _controller?.pause();
+    setState(() {
+      _isAnalyzing = true;
+    });
 
-  setState(() {
-    _isAnalyzing = true;
-  });
+    try {
+      final provider = context.read<VideoProvider>();
+      print("1- Before Upload");
 
-  try {
-
-    final provider = context.read<VideoProvider>();
-
-    final success = await provider.uploadVideo(
-      widget.childId,
-      File(widget.videoPath),
-    );
-
-    if (!mounted) return;
-
-    if (success) {
-      Navigator.pushReplacementNamed(
-        context,
-        '/videoresult',
+      final success = await provider.uploadVideo(
+        widget.childId,
+        File(widget.videoPath),
       );
+
+      print("2- Upload Finished");
+print("Success => $success");
+print("Result => ${provider.result}");
+
+
+      if (!mounted) return;
+
+      if (success) {
+        print(provider.result);
+        print(provider.result?.riskLevel);
+        print(provider.result?.totalScore);
+          print("3- Going To Result Screen");
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const VideoResultView()),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAnalyzing = false;
+        });
+      }
     }
-
-  } catch (e) {
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(e.toString())),
-    );
-
-  } finally {
-
-    if (mounted) {
-      setState(() {
-        _isAnalyzing = false;
-      });
-    }
-
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -178,15 +185,12 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
             ),
             const Gap(30),
 
-            /// عرض تشغيل الفيديو
             Expanded(
               child: _controller != null && _controller!.value.isInitialized
                   ? Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: const Color(
-                          0xFFF0F8FF,
-                        ), // نفس الدرجة اللبني المريحة اللي استخدمتها قبل كده
+                        color: const Color(0xFFF0F8FF),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: const Color(0xffDBEFF8),
@@ -200,13 +204,10 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
                           ),
                         ],
                       ),
-                      padding: const EdgeInsets.all(
-                        8,
-                      ), // Padding داخلي عشان يعطي إطار شيك للفيديو
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // كارت الفيديو نفسه
                           Expanded(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
@@ -217,12 +218,12 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
                                     aspectRatio: _controller!.value.aspectRatio,
                                     child: VideoPlayer(_controller!),
                                   ),
-                                  // طبقة تعتيم خفيفة جداً فوق الفيديو عشان تبرز الزرار فقط لو الفيديو واقف
+
                                   if (!_controller!.value.isPlaying)
                                     Container(
                                       color: Colors.black.withOpacity(0.2),
                                     ),
-                                  // زرار التشغيل
+
                                   GestureDetector(
                                     onTap: () {
                                       setState(() {
@@ -241,9 +242,7 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
                                             ? Colors.black26
                                             : const Color(
                                                 0xFF4A7DCD,
-                                              ).withOpacity(
-                                                0.9,
-                                              ), // لون الـ primary الأزرق بتاعك
+                                              ).withOpacity(0.9),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Icon(
@@ -260,12 +259,12 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
                             ),
                           ),
                           const Gap(10),
-                          // تايمر صغير يوضح مدة الفيديو تحتيه
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
-                                Icons.timer,
+                                Icons.timer_outlined,
                                 size: 16,
                                 color: Colors.grey,
                               ),
@@ -292,15 +291,12 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
             ),
             const Gap(40),
 
-            /// زرار الـ Analysis العبقري
             Container(
               width: double.infinity,
               height: 54,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: _isAnalyzing
-                    ? Colors.orange
-                    : const Color(0xFF4A7DCD), // مسمى الـ primary الجديد بتاعك
+                color: _isAnalyzing ? Colors.grey : const Color(0xFF4A7DCD),
               ),
               child: Material(
                 color: Colors.transparent,
@@ -312,21 +308,21 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
                         ? const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                              Gap(15),
                               Text(
                                 'AI is analyzing video...',
                                 style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
+                                ),
+                              ),
+                              Gap(15),
+                              SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
                                 ),
                               ),
                             ],

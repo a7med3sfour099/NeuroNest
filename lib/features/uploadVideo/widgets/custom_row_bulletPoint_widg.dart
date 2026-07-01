@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+// ignore: must_be_immutable
 class CustomRowBulletPoint extends StatelessWidget {
   String text;
   CustomRowBulletPoint({super.key, required this.text});

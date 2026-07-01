@@ -6,7 +6,9 @@
     "Neuro",
     "neuronest",
     "outlinedbutton",
-    "rowbutton"
+    "rowbutton",
+    "startques",
+    "upcomming"
   ],
   "flutterTools.displayGetxContextMenu": false,
   "flutterTools.displayMobxContextMenu": false,

@@ -199,11 +199,11 @@ class _ResultViewState extends State<ResultView> {
       backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             children: [
               _buildRiskGaugeCard(riskLevel, score, riskMessage),
-              const Gap(13),
+              // const Gap(13),
               _buildCategoriesCards(),
               const Gap(13),
               CustomElevatedbutton(

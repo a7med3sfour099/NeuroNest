@@ -86,7 +86,7 @@ class _ChildInfoViewState extends State<ChildInfoView> {
                           },
                         ),
                         Gap(25),
-                        //============
+                        
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

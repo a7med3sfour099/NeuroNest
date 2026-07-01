@@ -1,8 +1,10 @@
+import 'package:neuronest/features/Home/providers/child_provider.dart';
 import 'package:neuronest/features/Home/views/history_screen_view.dart';
 import 'package:neuronest/features/Home/views/home_screen_view.dart';
 import 'package:neuronest/features/Home/views/profile_screen_view.dart';
 import 'package:neuronest/features/Home/views/resource_screen_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -12,6 +14,17 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
+
+@override
+void initState() {
+  super.initState();
+
+  Future.microtask(() {
+    context.read<ChildProvider>().loadChild();
+  });
+}
+
+
   int _currentIndex = 0;
 
   final List<Widget> _screens = [

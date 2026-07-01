@@ -1,8 +1,11 @@
 import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/features/Home/providers/child_provider.dart';
+import 'package:neuronest/features/uploadVideo/views/upload_video_view.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class StartVideoView extends StatefulWidget {
   const StartVideoView({super.key});
@@ -49,7 +52,19 @@ class _StartVideoViewState extends State<StartVideoView> {
                       Gap(32),
                       CustomElevatedbutton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/uploadvideo');
+                          final child = context
+                              .read<ChildProvider>()
+                              .currentChild;
+
+                          if (child == null) return;
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  UploadVideoView(childId: child.childID),
+                            ),
+                          );
                         },
                         text: 'Start Uploading Video',
                       ),

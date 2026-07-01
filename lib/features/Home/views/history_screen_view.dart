@@ -192,7 +192,9 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
                       }
 
                       if (provider.history!.history.isEmpty) {
-                        return const Center(child: Text("No assessments yet"));
+                        return const Center(
+                          child: Text("No assessments yet 😊"),
+                        );
                       }
 
                       return ListView.builder(
@@ -200,12 +202,20 @@ class _AssessmentHistoryScreenState extends State<AssessmentHistoryScreen> {
                         itemCount: provider.history!.history.length,
                         itemBuilder: (context, index) {
                           final item = provider.history!.history[index];
+                          final bool isVideo = (item.screeningType)
+                              .toLowerCase()
+                              .contains("video");
+                          final Color itemColor = isVideo
+                              ? Colors.blue
+                              : Color(0xFFFF9800);
 
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: AssessmentListItem(
-                              color: Colors.blue,
-                              icon: Icons.assignment,
+                              color: itemColor,
+                              icon: isVideo
+                                  ? Icons.videocam_outlined
+                                  : Icons.assignment_outlined,
                               type: item.screeningType,
                               date: formatDate(item.screeningDate),
                               result: item.riskLevel,

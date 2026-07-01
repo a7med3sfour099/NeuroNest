@@ -17,6 +17,10 @@ class VideoProvider extends ChangeNotifier {
       File video,
       ) async {
 
+print("========== UPLOAD START ==========");
+  print("ChildId => $childId");
+  print("Video => ${video.path}");
+
     isLoading = true;
     notifyListeners();
 
@@ -26,8 +30,9 @@ class VideoProvider extends ChangeNotifier {
       childId,
       video,
     );
+      print("UPLOAD RESULT => $result");
     } catch (e) {
-      print('Video upload error: $e');
+       print("VIDEO ERROR => $e");
       result = null;
     }
 

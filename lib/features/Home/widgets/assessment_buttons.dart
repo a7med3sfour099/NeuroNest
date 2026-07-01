@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:neuronest/features/Home/providers/child_provider.dart';
+import 'package:neuronest/features/assessmentQues/providers/question_provider.dart';
+import 'package:provider/provider.dart';
 
 class AssessmentButtons extends StatelessWidget {
   const AssessmentButtons({super.key});
 
   @override
   Widget build(BuildContext context) {
+    context.watch<QuestionProvider>();
+    final childProvider = context.watch<ChildProvider>();
     return Row(
       children: [
-        // زرار الأسئلة
         Expanded(
           child: _buildActionCard(
             context,
@@ -16,14 +20,18 @@ class AssessmentButtons extends StatelessWidget {
             icon: Icons.assignment_outlined,
             color: const Color(0xFFFF9800),
             onTap: () {
-              Navigator.pushNamed(context, '/startques');
+              final currentChildId = childProvider.currentChild?.childID;
+              Navigator.pushReplacementNamed(
+                context,
+                '/startques',
+                arguments: {'childId': currentChildId},
+              );
             },
           ),
         ),
 
         const SizedBox(width: 16),
 
-        // زرار الفيديو
         Expanded(
           child: _buildActionCard(
             context,

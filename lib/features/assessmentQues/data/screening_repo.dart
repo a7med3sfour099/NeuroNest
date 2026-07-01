@@ -10,6 +10,8 @@ class ScreeningRepository {
         "screeningType": "Questionnaire",
       });
 
+      print("CREATE SCREENING RESPONSE => $response");
+
       if (response is Map<String, dynamic>) {
         return response['screeningID'];
       }

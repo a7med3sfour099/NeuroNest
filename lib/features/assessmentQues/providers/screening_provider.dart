@@ -17,10 +17,12 @@ class ScreeningProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+       print("CREATE SCREENING FOR CHILD => $childId");
       this.childId = childId;
 
-      final id =
-          await _repo.createScreening(childId);
+      final id = await _repo.createScreening(childId);
+
+          print("SCREENING ID FROM API => $id");
 
       screeningId = id;
 

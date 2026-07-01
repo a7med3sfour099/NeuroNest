@@ -31,7 +31,10 @@ class _UploadVideoViewState extends State<UploadVideoView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.video_library_outlined),
+                leading: const Icon(
+                  Icons.video_library_outlined,
+                  color: Colors.green,
+                ),
                 title: const Text('Upload from Gallery'),
                 onTap: () async {
                   Navigator.of(ctx).pop();
@@ -39,7 +42,10 @@ class _UploadVideoViewState extends State<UploadVideoView> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.videocam_outlined),
+                leading: const Icon(
+                  Icons.videocam_outlined,
+                  color: Colors.blue,
+                ),
                 title: const Text('Record Video'),
                 onTap: () async {
                   Navigator.of(ctx).pop();
@@ -77,8 +83,7 @@ class _UploadVideoViewState extends State<UploadVideoView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          AppColors.background,
+      backgroundColor: AppColors.background,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 65.0, horizontal: 9.0),
         child: SingleChildScrollView(
@@ -91,7 +96,6 @@ class _UploadVideoViewState extends State<UploadVideoView> {
               ),
               const Gap(25),
 
-              /// دبة رفع الفيديو
               GestureDetector(
                 onTap: _showVideoSourceBottomSheet,
                 child: Container(
@@ -203,7 +207,6 @@ class _UploadVideoViewState extends State<UploadVideoView> {
                             );
                           }
                         : () {
-                            // الانتقال وتمرير مسار الفيديو للصفحة الجاية
                             Navigator.push(
                               context,
                               MaterialPageRoute(

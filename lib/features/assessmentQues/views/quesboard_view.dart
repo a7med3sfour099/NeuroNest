@@ -292,8 +292,14 @@ class _QuesboardViewState extends State<QuesboardView> {
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Failed to submit answers'),
+                           SnackBar(
+                              content: const Text('Failed to submit answers'),
+                              backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              duration: const Duration(milliseconds: 1500),
                             ),
                           );
                         }

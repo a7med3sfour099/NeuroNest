@@ -5,7 +5,10 @@ class DioClient {
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: 'http://austimaiapp.runasp.net/api',
-      headers: {'Content-Type': 'application/json'},
+      // headers: {'Content-Type': 'application/json'},
+      connectTimeout: const Duration(seconds: 30),
+      sendTimeout: const Duration(minutes: 2),
+      receiveTimeout: const Duration(minutes: 2),
     ),
   );
 

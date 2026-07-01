@@ -106,13 +106,14 @@ class LearningResourcesScreen extends StatelessWidget {
                         ),
                         Gap(15),
                         _buildNeumorphicCard(
-                          icon: Icons.settings,
-                          iconColor: Colors.grey.shade700,
+                          icon: Icons.play_circle_fill,
+                          iconColor: Colors.teal,
                           title: "Understanding Stimming Behavior",
+                          isVideo: true,
                         ),
                         Gap(15),
                         _buildNeumorphicCard(
-                          icon: Icons.settings,
+                          icon: Icons.play_circle_fill,
                           iconColor: Colors.grey.shade700,
                           title: "Understanding Stimming Behavior..........",
                         ),
