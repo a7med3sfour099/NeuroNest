@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // View Imports
-import 'package:neuronest/features/Home/views/child_info_view.dart';
+import 'package:neuronest/features/home/views/child_info_view.dart';
 import 'package:neuronest/features/assessmentQues/views/quesboard_view.dart';
 import 'package:neuronest/features/assessmentQues/views/start_ques_view.dart';
 import 'package:neuronest/features/assessmentResult/views/result_view.dart';

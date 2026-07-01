@@ -11,8 +11,8 @@ import 'package:neuronest/core/routes/nav_key.dart';
 import 'package:neuronest/splash.dart';
 
 // Providers
-import 'package:neuronest/features/Home/providers/child_provider.dart';
-import 'package:neuronest/features/Home/providers/history_provider.dart';
+import 'package:neuronest/features/home/providers/child_provider.dart';
+import 'package:neuronest/features/home/providers/history_provider.dart';
 import 'package:neuronest/features/assessmentQues/providers/question_provider.dart';
 import 'package:neuronest/features/assessmentQues/providers/screening_provider.dart';
 import 'package:neuronest/features/auth/providers/auth_provider.dart';

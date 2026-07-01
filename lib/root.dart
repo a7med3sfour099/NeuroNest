@@ -1,8 +1,8 @@
-import 'package:neuronest/features/Home/providers/child_provider.dart';
-import 'package:neuronest/features/Home/views/history_screen_view.dart';
-import 'package:neuronest/features/Home/views/home_screen_view.dart';
-import 'package:neuronest/features/Home/views/profile_screen_view.dart';
-import 'package:neuronest/features/Home/views/resource_screen_view.dart';
+import 'package:neuronest/features/home/providers/child_provider.dart';
+import 'package:neuronest/features/home/views/history_screen_view.dart';
+import 'package:neuronest/features/home/views/home_screen_view.dart';
+import 'package:neuronest/features/home/views/profile_screen_view.dart';
+import 'package:neuronest/features/home/views/resource_screen_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

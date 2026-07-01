@@ -1,10 +1,13 @@
 import 'package:neuronest/core/constants/app_colors.dart';
+import 'package:neuronest/core/constants/question_categories.dart';
 import 'package:neuronest/features/assessmentResult/widgets/custom_card_widg.dart';
 import 'package:neuronest/features/assessmentResult/widgets/riskgauge_widg.dart';
+import 'package:neuronest/features/assessmentQues/providers/question_provider.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class ResultView extends StatefulWidget {
   const ResultView({
@@ -117,7 +120,8 @@ class _ResultViewState extends State<ResultView> {
     return count == 0 ? 0.0 : sum / count;
   }
 
-  String _getCategoryRatingByQuestions(List<int> questionIndices) {
+  // Returns internal keys 'Low', 'Moderate', 'High', 'No Data' for color mapping
+  String _getCategoryRatingKeyByQuestions(List<int> questionIndices) {
     final average = _getCategoryAverageByQuestions(questionIndices);
     final answeredCount = _getAnsweredCountByQuestions(questionIndices);
 
@@ -132,8 +136,25 @@ class _ResultViewState extends State<ResultView> {
     }
   }
 
-  Color _getRatingColor(String rating) {
-    switch (rating) {
+  // Helper to translate risk levels for display
+  String _translateRiskLevel(String risk, bool isAr) {
+    if (!isAr) return risk;
+    switch (risk.toLowerCase()) {
+      case 'low':
+        return 'منخفض';
+      case 'moderate':
+        return 'متوسط';
+      case 'high':
+        return 'مرتفع';
+      case 'no data':
+        return 'لا توجد بيانات';
+      default:
+        return risk;
+    }
+  }
+
+  Color _getRatingColor(String ratingKey) {
+    switch (ratingKey) {
       case 'Low':
         return Colors.green.shade700;
       case 'Moderate':
@@ -145,8 +166,8 @@ class _ResultViewState extends State<ResultView> {
     }
   }
 
-  Color _getRatingBackgroundColor(String rating) {
-    switch (rating) {
+  Color _getRatingBackgroundColor(String ratingKey) {
+    switch (ratingKey) {
       case 'Low':
         return Colors.green.withOpacity(0.2);
       case 'Moderate':
@@ -158,16 +179,22 @@ class _ResultViewState extends State<ResultView> {
     }
   }
 
-  String getRiskMessage(String riskLevel) {
+  String getRiskMessage(String riskLevel, bool isAr) {
     switch (riskLevel.toLowerCase()) {
       case 'high':
-        return 'Strong indicators were detected. Professional evaluation is recommended.';
+        return isAr
+            ? 'تم اكتشاف مؤشرات قوية. يوصى بإجراء تقييم مهني.'
+            : 'Strong indicators were detected. Professional evaluation is recommended.';
       case 'moderate':
-        return 'Some indicators were detected. Further assessment is recommended.';
+        return isAr
+            ? 'تم اكتشاف بعض المؤشرات. يوصى بإجراء مزيد من التقييم.'
+            : 'Some indicators were detected. Further assessment is recommended.';
       case 'low':
-        return 'Few indicators were detected. Continue monitoring development.';
+        return isAr
+            ? 'تم اكتشاف مؤشرات قليلة. استمر في مراقبة التطور.'
+            : 'Few indicators were detected. Continue monitoring development.';
       default:
-        return 'Assessment completed.';
+        return isAr ? 'اكتمل التقييم.' : 'Assessment completed.';
     }
   }
 
@@ -177,18 +204,22 @@ class _ResultViewState extends State<ResultView> {
 
     if (result == null) return const Center(child: CircularProgressIndicator());
 
-    final riskLevel = result['riskLevel'] ?? 'Unknown';
-    final score = result['totalScore'] ?? 0;
-    // final message = result['message'] ?? '';
+    // Get current language from QuestionProvider
+    final isAr = context.watch<QuestionProvider>().currentLanguage == 'ar';
 
-    final riskMessage = getRiskMessage(riskLevel);
+    final riskLevelKey = result['riskLevel'] ?? 'Unknown';
+    final score = result['totalScore'] ?? 0;
+
+    // Translate the final strings for display
+    final riskMessage = getRiskMessage(riskLevelKey, isAr);
+    final riskLevelDisplay = _translateRiskLevel(riskLevelKey, isAr);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.background,
         automaticallyImplyLeading: false,
         title: CustomText(
-          text: 'Assessment Result',
+          text: isAr ? 'نتيجة التقييم' : 'Assessment Result',
           size: 21,
           color: const Color(0xff000000),
           weight: FontWeight.w700,
@@ -197,26 +228,29 @@ class _ResultViewState extends State<ResultView> {
         centerTitle: true,
       ),
       backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            children: [
-              _buildRiskGaugeCard(riskLevel, score, riskMessage),
-              // const Gap(13),
-              _buildCategoriesCards(),
-              const Gap(13),
-              CustomElevatedbutton(
-                onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/root',
-                    (route) => false,
-                  );
-                },
-                text: 'Go to Home',
-              ),
-            ],
+      body: Directionality(
+        textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                _buildRiskGaugeCard(riskLevelDisplay, score, riskMessage, isAr),
+                _buildCategoriesCards(isAr),
+                const Gap(13),
+                CustomElevatedbutton(
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/root',
+                      (route) => false,
+                    );
+                  },
+                  text: isAr ? 'العودة للصفحة الرئيسية' : 'Go to Home',
+                ),
+                const Gap(30),
+              ],
+            ),
           ),
         ),
       ),
@@ -224,9 +258,10 @@ class _ResultViewState extends State<ResultView> {
   }
 
   Widget _buildRiskGaugeCard(
-    String riskLevel,
+    String riskLevelDisplay,
     dynamic score,
     String riskMessage,
+    bool isAr,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 27.0, horizontal: 10.0),
@@ -239,12 +274,17 @@ class _ResultViewState extends State<ResultView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 5, bottom: 20, left: 10, right: 10),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 5,
+                bottom: 20,
+                left: 10,
+                right: 10,
+              ),
               child: CustomText(
-                text: 'Overall Assessment',
+                text: isAr ? 'التقييم الشامل' : 'Overall Assessment',
                 size: 21,
-                color: Color(0xff6C6969),
+                color: const Color(0xff6C6969),
                 weight: FontWeight.w400,
                 textAlign: TextAlign.center,
               ),
@@ -255,7 +295,9 @@ class _ResultViewState extends State<ResultView> {
             Column(
               children: [
                 CustomText(
-                  text: 'Risk Level: $riskLevel',
+                  text: isAr
+                      ? 'مستوى الخطر: $riskLevelDisplay'
+                      : 'Risk Level: $riskLevelDisplay',
                   size: 20,
                   color: Colors.black,
                   weight: FontWeight.w700,
@@ -263,7 +305,7 @@ class _ResultViewState extends State<ResultView> {
                 ),
                 const Gap(10),
                 CustomText(
-                  text: 'Score: $score',
+                  text: isAr ? 'النتيجة: $score' : 'Score: $score',
                   size: 18,
                   color: Colors.black,
                   weight: FontWeight.w600,
@@ -285,43 +327,70 @@ class _ResultViewState extends State<ResultView> {
     );
   }
 
-  Widget _buildCategoriesCards() {
-    print('RESULT ANSWERS => $_selectedAnswers');
-    print('RESULT LENGTH => ${_selectedAnswers.length}');
-    final categories = [
-      {
-        'title': 'Social Interaction',
-        // 'start': 0,
-        // 'end': 4,
-        'questions': [3, 8, 10, 11, 14, 15, 18],
-        'image': 'assets/ques/ques_image.png',
-      },
-      {
-        'title': 'Communication',
-        // 'start': 5,
-        // 'end': 9,
-        'questions': [1, 6, 7, 9, 16, 17, 19],
-        'image': 'assets/ques/ques_image_2.png',
-      },
-      {
-        'title': 'Repetitive Behaviors',
-        // 'start': 10,
-        // 'end': 14,
-        'questions': [2, 4, 5, 12, 13, 20],
-        'image': 'assets/ques/ques_image_3.png',
-      },
+  // Build categories dynamically from questions
+  Widget _buildCategoriesCards(bool isAr) {
+    // Get questions from provider
+    final questions = context.watch<QuestionProvider>().questions;
+
+    if (questions.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: CustomText(
+          text: isAr ? 'لا توجد بيانات' : 'No data available',
+          size: 16,
+          color: Colors.grey,
+          weight: FontWeight.w400,
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    // Group questions by category
+    final Map<String, List<int>> groupedQuestions = {};
+
+    for (var q in questions) {
+      final category = QuestionCategories.getCategory(q.questionNumber);
+      groupedQuestions.putIfAbsent(category, () => []);
+      groupedQuestions[category]!.add(q.questionNumber);
+    }
+
+    // Build category list
+    final List<Map<String, dynamic>> categories = [];
+
+    // Define order of categories
+    final List<String> categoryOrder = [
+      'social',
+      'communication',
+      'repetitive',
     ];
+
+    for (var categoryKey in categoryOrder) {
+      if (groupedQuestions.containsKey(categoryKey)) {
+        categories.add({
+          'title': QuestionCategories.getTitle(categoryKey, isAr),
+          'questions': groupedQuestions[categoryKey]!,
+          'image': QuestionCategories.getImage(categoryKey),
+        });
+      }
+    }
+
+    // Add any 'other' categories at the end
+    if (groupedQuestions.containsKey('other')) {
+      categories.add({
+        'title': isAr ? 'أخرى' : 'Other',
+        'questions': groupedQuestions['other']!,
+        'image': 'assets/ques/ques_image.png',
+      });
+    }
 
     List<Widget> visibleCards = [];
 
     for (var category in categories) {
-      // final start = category['start'] as int;
-      // final end = category['end'] as int;
-      final questions = category['questions'] as List<int>;
+      final questionsList = category['questions'] as List<int>;
 
-      if (_hasAnyAnswerByQuestions(questions)) {
-        final rating = _getCategoryRatingByQuestions(questions);
-        // final average = _getCategoryAverageByQuestions(questions);
+      if (_hasAnyAnswerByQuestions(questionsList)) {
+        final ratingKey = _getCategoryRatingKeyByQuestions(questionsList);
+        final ratingDisplay = _translateRiskLevel(ratingKey, isAr);
 
         visibleCards.add(
           Column(
@@ -329,9 +398,9 @@ class _ResultViewState extends State<ResultView> {
               CustomCard(
                 backgroundImage: category['image'] as String,
                 text: category['title'] as String,
-                textCont: rating,
-                color: _getRatingBackgroundColor(rating),
-                colorTextCont: _getRatingColor(rating),
+                textCont: ratingDisplay,
+                color: _getRatingBackgroundColor(ratingKey),
+                colorTextCont: _getRatingColor(ratingKey),
               ),
               const Gap(13),
             ],
@@ -341,10 +410,12 @@ class _ResultViewState extends State<ResultView> {
     }
 
     if (visibleCards.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.all(20.0),
+      return Padding(
+        padding: const EdgeInsets.all(20.0),
         child: CustomText(
-          text: 'No completed categories to display',
+          text: isAr
+              ? 'لا توجد فئات مكتملة لعرضها'
+              : 'No completed categories to display',
           size: 16,
           color: Colors.grey,
           weight: FontWeight.w400,

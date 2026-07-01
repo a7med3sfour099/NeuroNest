@@ -1,7 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:neuronest/core/constants/app_colors.dart';
 import 'package:neuronest/core/utils/validators.dart';
-import 'package:neuronest/features/Home/providers/child_provider.dart';
+import 'package:neuronest/features/home/providers/child_provider.dart';
 import 'package:neuronest/features/auth/providers/auth_provider.dart';
 import 'package:neuronest/shared/Custom_rowbutton.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';

@@ -1,6 +1,8 @@
 import 'package:neuronest/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
+import 'package:neuronest/features/assessmentQues/providers/question_provider.dart';
 
 class QuesAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int currentQuestion;
@@ -17,6 +19,10 @@ class QuesAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final progress = currentQuestion / totalQuestions;
+    
+    // Listen to the provider to keep the title translated, but we removed the switcher menu
+    final provider = context.watch<QuestionProvider>();
+    final bool isAr = provider.currentLanguage == 'ar';
 
     return AppBar(
       leading: IconButton(
@@ -25,19 +31,21 @@ class QuesAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: onBackPressed ?? () => Navigator.pop(context),
       ),
       title: Padding(
-        padding: EdgeInsets.only(top: 12.0),
+        padding: const EdgeInsets.only(top: 12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Question $currentQuestion of $totalQuestions',
+              isAr
+                  ? 'سؤال $currentQuestion من $totalQuestions'
+                  : 'Question $currentQuestion of $totalQuestions',
               style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w500),
             ),
-            Gap(12),
+            const Gap(12),
             LinearProgressIndicator(
               value: progress,
-              minHeight: 6,
+              minHeight: 8,
               borderRadius: BorderRadius.circular(10),
               backgroundColor: Colors.grey[300],
               valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
@@ -49,9 +57,10 @@ class QuesAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       backgroundColor: AppColors.background,
       scrolledUnderElevation: 0,
+      
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(80); // Adjust the height as needed for the appbar
+  Size get preferredSize => const Size.fromHeight(80);
 }

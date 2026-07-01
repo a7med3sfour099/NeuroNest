@@ -1,5 +1,5 @@
 import 'package:neuronest/core/constants/app_colors.dart';
-import 'package:neuronest/features/Home/providers/child_provider.dart';
+import 'package:neuronest/features/home/providers/child_provider.dart';
 import 'package:neuronest/features/uploadVideo/views/upload_video_view.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_text.dart';

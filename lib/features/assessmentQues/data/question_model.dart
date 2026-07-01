@@ -5,6 +5,7 @@ class QuestionModel {
   final String questionEn;
   final bool riskIfNo;
   final bool isActive;
+  final String category;
 
   QuestionModel({
     required this.questionId,
@@ -13,6 +14,7 @@ class QuestionModel {
     required this.questionEn,
     required this.riskIfNo,
     required this.isActive,
+    this.category = 'other',
   });
 
   factory QuestionModel.fromJson(
@@ -25,6 +27,7 @@ class QuestionModel {
       questionEn: json['questionText_EN'] ?? '',
       riskIfNo: json['riskIfNo'] ?? false,
       isActive: json['isActive'] ?? false,
+      category: json['category'] ?? 'other',
     );
   }
 }

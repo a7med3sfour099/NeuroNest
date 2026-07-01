@@ -9,6 +9,8 @@ class QuestionProvider extends ChangeNotifier {
 
   List<QuestionModel> questions = [];
 
+  String currentLanguage = 'en';
+
   Future<void> loadQuestions() async {
     isLoading = true;
     notifyListeners();
@@ -17,6 +19,12 @@ class QuestionProvider extends ChangeNotifier {
       questions = await _repo.getQuestions();
     } finally {
       isLoading = false;
+      notifyListeners();
+    }
+  }
+  void setLanguage(String langCode) {
+    if (currentLanguage != langCode) {
+      currentLanguage = langCode;
       notifyListeners();
     }
   }
