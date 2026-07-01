@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:neuronest/core/constants/app_colors.dart';
 import 'package:neuronest/core/utils/validators.dart';
 import 'package:neuronest/features/auth/providers/auth_provider.dart';
+import 'package:neuronest/features/home/providers/child_provider.dart';
 import 'package:neuronest/shared/Custom_rowbutton.dart';
 import 'package:neuronest/shared/custom_elevatedbutton.dart';
 import 'package:neuronest/shared/custom_outlinedbutton.dart';
@@ -94,10 +95,26 @@ class _SignUpViewState extends State<SignUpView> {
                                   if (!mounted) return;
 
                                   if (success) {
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      '/childinfo',
-                                    );
+                                    final childProvider = context
+                                        .read<ChildProvider>();
+
+                                    await childProvider.loadChild();
+
+                                    if (!mounted) return;
+
+                                    if (childProvider.currentChild == null) {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/childinfo',
+                                        (route) => false,
+                                      );
+                                    } else {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/root',
+                                        (route) => false,
+                                      );
+                                    }
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

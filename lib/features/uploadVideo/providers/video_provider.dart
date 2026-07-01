@@ -16,7 +16,7 @@ class VideoProvider extends ChangeNotifier {
     print("========== UPLOAD PIPELINE START ==========");
 
     isLoading = true;
-    loadingMessage = 'Compressing video...';
+    loadingMessage = 'Analyzing video...';
     notifyListeners();
 
     File fileToUpload = video;

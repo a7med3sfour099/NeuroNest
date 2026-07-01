@@ -333,7 +333,7 @@ class _PreviewAndAnalyzeViewState extends State<PreviewAndAnalyzeView> {
                             },
                           )
                         : const Text(
-                            'Analyze Video',
+                            'Analyze Video By AI',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,

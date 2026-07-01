@@ -219,26 +219,26 @@ class _LoginViewState extends State<LoginView> {
                                   if (!mounted) return;
 
                                   if (success) {
-                                    // ScaffoldMessenger.of(context).showSnackBar(
-                                    //   SnackBar(
-                                    //     content: const Text('Login successful'),
-                                    //     duration: const Duration(seconds: 1),
-                                    //     backgroundColor: Colors.green[700],
-                                    //     behavior: SnackBarBehavior.floating,
-                                    //     shape: RoundedRectangleBorder(
-                                    //       borderRadius: BorderRadius.circular(
-                                    //         10,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // );
-                                    // await Future.delayed(
-                                    //   const Duration(milliseconds: 1500),
-                                    // );
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      '/childinfo',
-                                    );
+                                    final childProvider = context
+                                        .read<ChildProvider>();
+
+                                    await childProvider.loadChild();
+
+                                    if (!mounted) return;
+
+                                    if (childProvider.currentChild == null) {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/childinfo',
+                                        (route) => false,
+                                      );
+                                    } else {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/root',
+                                        (route) => false,
+                                      );
+                                    }
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
