@@ -1,5 +1,4 @@
 import 'package:neuronest/core/services/auth_service.dart';
-import 'package:neuronest/features/auth/data/auth_repo.dart' as _authService;
 import 'package:neuronest/features/auth/data/user_model.dart';
 
 class AuthRepository {
